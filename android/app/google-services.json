@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "489283869019",
+    "project_id": "fluttify-4e9eb",
+    "storage_bucket": "fluttify-4e9eb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:489283869019:android:8a0d1c165fd5316118227e",
+        "android_client_info": {
+          "package_name": "com.example.fluttify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "489283869019-co05vml9k20p4td81lmcgdgm04fbc441.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlb4ws065BYrcA0hzPmLHCNBjG7R9u86o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489283869019-co05vml9k20p4td81lmcgdgm04fbc441.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
