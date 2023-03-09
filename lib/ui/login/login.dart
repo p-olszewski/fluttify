@@ -34,9 +34,9 @@ class _LoginState extends State<Login> {
               style: TextStyle(color: Colors.white, fontSize: 32),
             ),
             SizedBox(height: screenHeight / 15),
-            CustomTextFormField(controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com"),
+            CustomTextFormField(controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com", obscure: false),
             SizedBox(height: screenHeight / 100),
-            CustomTextFormField(controller: _passwordFieldController, labelText: "Password", hintText: "password"),
+            CustomTextFormField(controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
             SizedBox(height: screenHeight / 15),
             ElevatedButton(
               onPressed: () async {
