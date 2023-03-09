@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 Future<bool> signIn(String email, String password) async {
   try {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    await _auth.signInWithEmailAndPassword(email: email, password: password);
     return true;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
@@ -21,7 +22,7 @@ Future<bool> signIn(String email, String password) async {
 
 Future<bool> signUp(String email, String password) async {
   try {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    await _auth.createUserWithEmailAndPassword(email: email, password: password);
     return true;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
@@ -38,7 +39,7 @@ Future<bool> signUp(String email, String password) async {
 
 Future<bool> signOut() async {
   try {
-    await FirebaseAuth.instance.signOut();
+    await _auth.signOut();
     return true;
   } catch (e) {
     Fluttertoast.showToast(msg: e.toString());
