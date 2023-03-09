@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'fluttify',
       theme: ThemeData(primarySwatch: Colors.indigo),
-      home: const LoginPage(),
+      home: const LoginScreen(),
     );
   }
 }
