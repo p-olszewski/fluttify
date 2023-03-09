@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:fluttify/screens/login_screen.dart';
+import 'package:fluttify/ui/login/login.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'fluttify',
       theme: ThemeData(primarySwatch: Colors.indigo),
-      home: const LoginScreen(),
+      home: const Login(),
     );
   }
 }

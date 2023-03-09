@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:fluttify/screens/registration_screen.dart';
+import 'package:fluttify/ui/registration/registration.dart';
+import 'package:fluttify/ui/shared/shared.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class Login extends StatefulWidget {
+  const Login({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<Login> createState() => _LoginState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginState extends State<Login> {
   final TextEditingController _emailField = TextEditingController();
   final TextEditingController _passwordField = TextEditingController();
 
@@ -16,7 +17,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
-    var widgetWidth = screenWidth / 1.3;
 
     return Scaffold(
       body: Container(
@@ -31,33 +31,9 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(color: Colors.white, fontSize: 32),
             ),
             SizedBox(height: screenHeight / 15),
-            SizedBox(
-              width: widgetWidth,
-              child: TextFormField(
-                style: const TextStyle(color: Colors.white),
-                controller: _emailField,
-                decoration: const InputDecoration(
-                  labelStyle: TextStyle(color: Colors.white),
-                  labelText: "Email",
-                  hintStyle: TextStyle(color: Color.fromARGB(255, 144, 161, 252)),
-                  hintText: "youremail@email.com",
-                ),
-              ),
-            ),
+            CustomTextFormField(controller: _emailField, labelText: "Email", hintText: "youremail@email.com"),
             SizedBox(height: screenHeight / 100),
-            SizedBox(
-              width: widgetWidth,
-              child: TextFormField(
-                style: const TextStyle(color: Colors.white),
-                controller: _passwordField,
-                decoration: const InputDecoration(
-                  labelStyle: TextStyle(color: Colors.white),
-                  labelText: "Password",
-                  hintStyle: TextStyle(color: Color.fromARGB(255, 144, 161, 252)),
-                  hintText: "password",
-                ),
-              ),
-            ),
+            CustomTextFormField(controller: _passwordField, labelText: "Password", hintText: "password"),
             SizedBox(height: screenHeight / 15),
             ElevatedButton(
               onPressed: () {},
@@ -75,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const RegistrationScreen(),
+                    builder: (context) => const Registration(),
                   ),
                 );
               },
