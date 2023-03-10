@@ -15,7 +15,7 @@ class Registration extends StatefulWidget {
 class _RegistrationState extends State<Registration> {
   final TextEditingController _emailFieldController = TextEditingController();
   final TextEditingController _passwordFieldController = TextEditingController();
-  final TextEditingController _repeatPasswordFieldController = TextEditingController();
+  final TextEditingController _repeatedPasswordFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +40,12 @@ class _RegistrationState extends State<Registration> {
             CustomTextFormField(controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
             SizedBox(height: screenHeight / 100),
             CustomTextFormField(
-                controller: _repeatPasswordFieldController, labelText: "Repeat password", hintText: "password", obscure: true),
+                controller: _repeatedPasswordFieldController, labelText: "Repeat password", hintText: "password", obscure: true),
             SizedBox(height: screenHeight / 15),
             ElevatedButton(
               onPressed: () async {
-                bool shouldRedirect = await signUp(_emailFieldController.text, _passwordFieldController.text);
+                bool shouldRedirect =
+                    await signUp(_emailFieldController.text, _passwordFieldController.text, _repeatedPasswordFieldController.text);
                 if (shouldRedirect) {
                   Fluttertoast.showToast(msg: "Account created");
                   if (!mounted) return;
