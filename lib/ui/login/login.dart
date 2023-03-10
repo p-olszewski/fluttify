@@ -15,6 +15,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final TextEditingController _emailFieldController = TextEditingController();
   final TextEditingController _passwordFieldController = TextEditingController();
+  final TextEditingController _repeatedPasswordFieldController = TextEditingController();
+  bool isLoginView = true;
 
   @override
   Widget build(BuildContext context) {
@@ -29,20 +31,34 @@ class _LoginState extends State<Login> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Sign in to fluttify",
-              style: TextStyle(color: Colors.white, fontSize: 32),
+            Text(
+              isLoginView ? "Sign in to fluttify" : "Create Account",
+              style: const TextStyle(color: Colors.white, fontSize: 32),
             ),
             SizedBox(height: screenHeight / 15),
             CustomTextFormField(controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com", obscure: false),
             SizedBox(height: screenHeight / 100),
             CustomTextFormField(controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
+            SizedBox(height: screenHeight / 100),
+            Visibility(
+              visible: !isLoginView,
+              child: CustomTextFormField(
+                  controller: _repeatedPasswordFieldController, labelText: "Repeat password", hintText: "password", obscure: true),
+            ),
             SizedBox(height: screenHeight / 15),
             ElevatedButton(
               onPressed: () async {
-                bool shouldRedirect = await signIn(_emailFieldController.text, _passwordFieldController.text);
+                bool shouldRedirect = isLoginView
+                    ? await signIn(_emailFieldController.text, _passwordFieldController.text)
+                    : await signUp(
+                        _emailFieldController.text,
+                        _passwordFieldController.text,
+                        _repeatedPasswordFieldController.text,
+                      );
                 if (shouldRedirect) {
-                  Fluttertoast.showToast(msg: "Logged in");
+                  Fluttertoast.showToast(
+                    msg: isLoginView ? "Logged in" : "Account created",
+                  );
                   if (!mounted) return;
                   Navigator.push(
                     context,
@@ -55,24 +71,20 @@ class _LoginState extends State<Login> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
               ),
-              child: const Text(
-                "Sign in",
-                style: TextStyle(color: Colors.indigo),
+              child: Text(
+                isLoginView ? "Sign in" : "Register and login",
+                style: const TextStyle(color: Colors.indigo),
               ),
             ),
             TextButton(
               onPressed: () async {
-                if (!mounted) return;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const Registration(),
-                  ),
-                );
+                setState(() {
+                  isLoginView = !isLoginView;
+                });
               },
-              child: const Text(
-                "go to registration page",
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+              child: Text(
+                isLoginView ? "go to registration page" : "go back to the login page",
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
               ),
             ),
           ],
