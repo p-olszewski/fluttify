@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:fluttify/net/auth.dart';
-import 'package:fluttify/ui/home/home.dart';
-import 'package:fluttify/ui/shared/shared.dart';
+import 'package:fluttify/services/auth.dart';
+import 'package:fluttify/home/home.dart';
+import 'package:fluttify/shared/shared.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
