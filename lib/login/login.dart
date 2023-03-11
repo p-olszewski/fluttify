@@ -13,10 +13,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final TextEditingController _emailFieldController = TextEditingController();
-  final TextEditingController _passwordFieldController =
-      TextEditingController();
-  final TextEditingController _repeatedPasswordFieldController =
-      TextEditingController();
+  final TextEditingController _passwordFieldController = TextEditingController();
+  final TextEditingController _repeatedPasswordFieldController = TextEditingController();
   bool _isLoginPage = true;
 
   @override
@@ -38,16 +36,10 @@ class _LoginState extends State<Login> {
             ),
             SizedBox(height: screenHeight / 15),
             CustomTextFormField(
-                controller: _emailFieldController,
-                labelText: "Email",
-                hintText: "youremail@email.com",
-                obscure: false),
+                controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com", obscure: false),
             SizedBox(height: screenHeight / 100),
             CustomTextFormField(
-                controller: _passwordFieldController,
-                labelText: "Password",
-                hintText: "password",
-                obscure: true),
+                controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
             SizedBox(height: screenHeight / 100),
             Visibility(
               visible: !_isLoginPage,
@@ -61,8 +53,7 @@ class _LoginState extends State<Login> {
             ElevatedButton(
               onPressed: () async {
                 bool shouldRedirect = _isLoginPage
-                    ? await signIn(_emailFieldController.text,
-                        _passwordFieldController.text)
+                    ? await signIn(_emailFieldController.text, _passwordFieldController.text)
                     : await signUp(
                         _emailFieldController.text,
                         _passwordFieldController.text,
@@ -98,11 +89,8 @@ class _LoginState extends State<Login> {
                 FocusScope.of(context).unfocus();
               }),
               child: Text(
-                _isLoginPage
-                    ? "go to registration page"
-                    : "go back to the login page",
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.w400),
+                _isLoginPage ? "go to registration page" : "go back to the login page",
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
               ),
             ),
           ],
