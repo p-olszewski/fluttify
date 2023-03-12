@@ -20,7 +20,11 @@ Future<bool> signIn(String email, String password) async {
   }
 }
 
-Future<bool> signUp(String email, String password) async {
+Future<bool> signUp(String email, String password, String repeatedPassword) async {
+  if (password != repeatedPassword) {
+    Fluttertoast.showToast(msg: 'The passwords do not match.');
+    return false;
+  }
   try {
     await _auth.createUserWithEmailAndPassword(email: email, password: password);
     return true;
