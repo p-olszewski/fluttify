@@ -44,24 +44,16 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     return Scaffold(
       body: AnimatedBuilder(
         animation: _animationController,
-        builder: (BuildContext context, Widget? child) {
+        builder: (BuildContext context, _) {
           _backgroundColorAnimation = TweenSequence<Color?>(
             <TweenSequenceItem<Color?>>[
-              _isLoginPage
-                  ? TweenSequenceItem(
-                      tween: ColorTween(
-                        begin: Colors.indigo.shade700,
-                        end: Colors.indigo,
-                      ),
-                      weight: 1,
-                    )
-                  : TweenSequenceItem(
-                      tween: ColorTween(
-                        begin: Colors.indigo,
-                        end: Colors.indigo.shade700,
-                      ),
-                      weight: 1,
-                    ),
+              TweenSequenceItem(
+                tween: ColorTween(
+                  begin: _isLoginPage ? Colors.indigo.shade700 : Colors.indigo,
+                  end: _isLoginPage ? Colors.indigo : Colors.indigo.shade700,
+                ),
+                weight: 1,
+              ),
             ],
           ).animate(_animationController);
 
