@@ -11,22 +11,62 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   final TextEditingController _emailFieldController = TextEditingController();
   final TextEditingController _passwordFieldController = TextEditingController();
   final TextEditingController _repeatedPasswordFieldController = TextEditingController();
   bool _isLoginPage = true;
+  late AnimationController _animationController;
+  late Animation<Color?> _backgroundColorAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animationController.addListener(() => setState(() {}));
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
+    _backgroundColorAnimation = TweenSequence<Color?>(
+      <TweenSequenceItem<Color?>>[
+        _isLoginPage
+            ? TweenSequenceItem(
+                tween: ColorTween(
+                  begin: Colors.indigo.shade700,
+                  end: Colors.indigo,
+                ),
+                weight: 1,
+              )
+            : TweenSequenceItem(
+                tween: ColorTween(
+                  begin: Colors.indigo,
+                  end: Colors.indigo.shade700,
+                ),
+                weight: 1,
+              ),
+      ],
+    ).animate(_animationController);
 
     return Scaffold(
       body: Container(
         width: screenWidth,
         height: screenHeight,
-        decoration: const BoxDecoration(color: Colors.indigo),
+        decoration: BoxDecoration(
+          color: _backgroundColorAnimation.value,
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -35,19 +75,14 @@ class _LoginState extends State<Login> {
               style: const TextStyle(color: Colors.white, fontSize: 32),
             ),
             SizedBox(height: screenHeight / 15),
-            CustomTextFormField(
-                controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com", obscure: false),
+            CustomTextFormField(controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com", obscure: false),
             SizedBox(height: screenHeight / 100),
-            CustomTextFormField(
-                controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
+            CustomTextFormField(controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
             SizedBox(height: screenHeight / 100),
             Visibility(
               visible: !_isLoginPage,
               child: CustomTextFormField(
-                  controller: _repeatedPasswordFieldController,
-                  labelText: "Repeat password",
-                  hintText: "password",
-                  obscure: true),
+                  controller: _repeatedPasswordFieldController, labelText: "Repeat password", hintText: "password", obscure: true),
             ),
             SizedBox(height: screenHeight / 15),
             ElevatedButton(
@@ -87,6 +122,8 @@ class _LoginState extends State<Login> {
                 _passwordFieldController.clear();
                 _repeatedPasswordFieldController.clear();
                 FocusScope.of(context).unfocus();
+                _animationController.reset();
+                _animationController.forward();
               }),
               child: Text(
                 _isLoginPage ? "go to registration page" : "go back to the login page",
