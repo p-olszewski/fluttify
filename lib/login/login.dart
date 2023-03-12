@@ -16,25 +16,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   final TextEditingController _passwordFieldController = TextEditingController();
   final TextEditingController _repeatedPasswordFieldController = TextEditingController();
   bool _isLoginPage = true;
-  late AnimationController _animationController;
-  late Animation<Color?> _backgroundColorAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 300),
-    );
-    _animationController.addListener(() => setState(() {}));
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+  Color _color = Colors.indigo;
 
   @override
   Widget build(BuildContext context) {
@@ -42,94 +24,75 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
     var screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      body: AnimatedBuilder(
-        animation: _animationController,
-        builder: (BuildContext context, _) {
-          _backgroundColorAnimation = TweenSequence<Color?>(
-            <TweenSequenceItem<Color?>>[
-              TweenSequenceItem(
-                tween: ColorTween(
-                  begin: _isLoginPage ? Colors.indigo.shade700 : Colors.indigo,
-                  end: _isLoginPage ? Colors.indigo : Colors.indigo.shade700,
-                ),
-                weight: 1,
+      body: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        width: screenWidth,
+        height: screenHeight,
+        color: _color,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _isLoginPage ? "Sign in to fluttify" : "Create Account",
+              style: const TextStyle(color: Colors.white, fontSize: 32),
+            ),
+            SizedBox(height: screenHeight / 15),
+            CustomTextFormField(controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com", obscure: false),
+            SizedBox(height: screenHeight / 100),
+            CustomTextFormField(controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
+            SizedBox(height: screenHeight / 100),
+            Visibility(
+              visible: !_isLoginPage,
+              child: CustomTextFormField(
+                  controller: _repeatedPasswordFieldController, labelText: "Repeat password", hintText: "password", obscure: true),
+            ),
+            SizedBox(height: screenHeight / 15),
+            ElevatedButton(
+              onPressed: () async {
+                bool shouldRedirect = _isLoginPage
+                    ? await signIn(_emailFieldController.text, _passwordFieldController.text)
+                    : await signUp(
+                        _emailFieldController.text,
+                        _passwordFieldController.text,
+                        _repeatedPasswordFieldController.text,
+                      );
+                if (shouldRedirect) {
+                  Fluttertoast.showToast(
+                    msg: _isLoginPage ? "Logged in" : "Account created",
+                  );
+                  if (!mounted) return;
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Home(),
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
               ),
-            ],
-          ).animate(_animationController);
-
-          return Container(
-            width: screenWidth,
-            height: screenHeight,
-            decoration: BoxDecoration(
-              color: _backgroundColorAnimation.value,
+              child: Text(
+                _isLoginPage ? "Sign in" : "Register and login",
+                style: const TextStyle(color: Colors.indigo),
+              ),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  _isLoginPage ? "Sign in to fluttify" : "Create Account",
-                  style: const TextStyle(color: Colors.white, fontSize: 32),
-                ),
-                SizedBox(height: screenHeight / 15),
-                CustomTextFormField(controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com", obscure: false),
-                SizedBox(height: screenHeight / 100),
-                CustomTextFormField(controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
-                SizedBox(height: screenHeight / 100),
-                Visibility(
-                  visible: !_isLoginPage,
-                  child: CustomTextFormField(
-                      controller: _repeatedPasswordFieldController, labelText: "Repeat password", hintText: "password", obscure: true),
-                ),
-                SizedBox(height: screenHeight / 15),
-                ElevatedButton(
-                  onPressed: () async {
-                    bool shouldRedirect = _isLoginPage
-                        ? await signIn(_emailFieldController.text, _passwordFieldController.text)
-                        : await signUp(
-                            _emailFieldController.text,
-                            _passwordFieldController.text,
-                            _repeatedPasswordFieldController.text,
-                          );
-                    if (shouldRedirect) {
-                      Fluttertoast.showToast(
-                        msg: _isLoginPage ? "Logged in" : "Account created",
-                      );
-                      if (!mounted) return;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Home(),
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                  ),
-                  child: Text(
-                    _isLoginPage ? "Sign in" : "Register and login",
-                    style: const TextStyle(color: Colors.indigo),
-                  ),
-                ),
-                TextButton(
-                  onPressed: () => setState(() {
-                    _isLoginPage = !_isLoginPage;
-                    _emailFieldController.clear();
-                    _passwordFieldController.clear();
-                    _repeatedPasswordFieldController.clear();
-                    FocusScope.of(context).unfocus();
-                    _animationController.reset();
-                    _animationController.forward();
-                  }),
-                  child: Text(
-                    _isLoginPage ? "go to registration page" : "go back to the login page",
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
-                  ),
-                ),
-              ],
+            TextButton(
+              onPressed: () => setState(() {
+                _isLoginPage = !_isLoginPage;
+                _emailFieldController.clear();
+                _passwordFieldController.clear();
+                _repeatedPasswordFieldController.clear();
+                FocusScope.of(context).unfocus();
+                _color = _isLoginPage ? Colors.indigo : Colors.indigo.shade700;
+              }),
+              child: Text(
+                _isLoginPage ? "go to registration page" : "go back to the login page",
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+              ),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
