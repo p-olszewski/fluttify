@@ -32,7 +32,7 @@ class CustomTextFormField extends StatelessWidget {
           hintStyle: const TextStyle(color: Color.fromARGB(255, 144, 161, 252)),
           hintText: hintText,
           focusedBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.white),
+            borderSide: BorderSide(color: Colors.redAccent),
           ),
         ),
       ),
