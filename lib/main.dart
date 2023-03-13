@@ -1,6 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttify/home/home.dart';
 import 'package:fluttify/login/login.dart';
+
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -18,7 +20,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'fluttify',
       theme: ThemeData(primarySwatch: Colors.indigo),
-      home: const Login(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const Login(),
+        '/home': (context) => const Home(),
+      },
     );
   }
 }

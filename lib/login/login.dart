@@ -2,7 +2,6 @@ import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/auth.dart';
-import 'package:fluttify/home/home.dart';
 import 'package:fluttify/shared/shared.dart';
 
 class Login extends StatefulWidget {
@@ -14,8 +13,10 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   final TextEditingController _emailFieldController = TextEditingController();
-  final TextEditingController _passwordFieldController = TextEditingController();
-  final TextEditingController _repeatedPasswordFieldController = TextEditingController();
+  final TextEditingController _passwordFieldController =
+      TextEditingController();
+  final TextEditingController _repeatedPasswordFieldController =
+      TextEditingController();
   final Color _color = Colors.indigo;
   bool _isLoginPage = true;
   int _key = 1;
@@ -33,9 +34,11 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
         color: _color,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          transitionBuilder: (Widget child, Animation<double> animation) => FadeThroughTransition(
+          transitionBuilder: (Widget child, Animation<double> animation) =>
+              FadeThroughTransition(
             animation: animation,
-            secondaryAnimation: Tween<double>(begin: 0, end: 0).animate(animation),
+            secondaryAnimation:
+                Tween<double>(begin: 0, end: 0).animate(animation),
             child: child,
           ),
           // main container
@@ -52,20 +55,32 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                   style: const TextStyle(color: Colors.white, fontSize: 32),
                 ),
                 SizedBox(height: screenHeight / 15),
-                CustomTextFormField(controller: _emailFieldController, labelText: "Email", hintText: "youremail@email.com", obscure: false),
+                CustomTextFormField(
+                    controller: _emailFieldController,
+                    labelText: "Email",
+                    hintText: "youremail@email.com",
+                    obscure: false),
                 SizedBox(height: screenHeight / 100),
-                CustomTextFormField(controller: _passwordFieldController, labelText: "Password", hintText: "password", obscure: true),
+                CustomTextFormField(
+                    controller: _passwordFieldController,
+                    labelText: "Password",
+                    hintText: "password",
+                    obscure: true),
                 SizedBox(height: screenHeight / 100),
                 Visibility(
                   visible: !_isLoginPage,
                   child: CustomTextFormField(
-                      controller: _repeatedPasswordFieldController, labelText: "Repeat password", hintText: "password", obscure: true),
+                      controller: _repeatedPasswordFieldController,
+                      labelText: "Repeat password",
+                      hintText: "password",
+                      obscure: true),
                 ),
                 SizedBox(height: screenHeight / 15),
                 ElevatedButton(
                   onPressed: () async {
                     bool shouldRedirect = _isLoginPage
-                        ? await signIn(_emailFieldController.text, _passwordFieldController.text)
+                        ? await signIn(_emailFieldController.text,
+                            _passwordFieldController.text)
                         : await signUp(
                             _emailFieldController.text,
                             _passwordFieldController.text,
@@ -76,12 +91,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                         msg: _isLoginPage ? "Logged in" : "Account created",
                       );
                       if (!mounted) return;
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Home(),
-                        ),
-                      );
+                      Navigator.pushReplacementNamed(context, '/home');
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -102,8 +112,11 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     _key = _isLoginPage ? 1 : 2;
                   }),
                   child: Text(
-                    _isLoginPage ? "go to registration page" : "go back to the login page",
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+                    _isLoginPage
+                        ? "go to registration page"
+                        : "go back to the login page",
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w400),
                   ),
                 ),
               ],
