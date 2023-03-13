@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'fluttify',
       theme: ThemeData(primarySwatch: Colors.indigo),
-      initialRoute: '/',
+      initialRoute: '/home',
       routes: {
         '/': (context) => const Login(),
         '/home': (context) => const Home(),
