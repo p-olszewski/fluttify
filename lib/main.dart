@@ -19,8 +19,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'fluttify',
-      theme: ThemeData(primarySwatch: Colors.indigo),
-      initialRoute: '/home',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.indigo,
+        ).copyWith(
+          secondary: Colors.red,
+        ),
+      ),
+      initialRoute: '/',
       routes: {
         '/': (context) => const Login(),
         '/home': (context) => const Home(),

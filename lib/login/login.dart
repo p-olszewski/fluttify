@@ -17,7 +17,6 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       TextEditingController();
   final TextEditingController _repeatedPasswordFieldController =
       TextEditingController();
-  final Color _color = Colors.indigo;
   bool _isLoginPage = true;
   int _key = 1;
 
@@ -31,7 +30,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
       body: Container(
         width: screenWidth,
         height: screenHeight,
-        color: _color,
+        color: Theme.of(context).colorScheme.primary,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           transitionBuilder: (Widget child, Animation<double> animation) =>
@@ -46,7 +45,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
             key: ValueKey<int>(_key),
             width: screenWidth,
             height: screenHeight,
-            color: _color,
+            color: Theme.of(context).colorScheme.primary,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
