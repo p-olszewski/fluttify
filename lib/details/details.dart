@@ -4,7 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/firestore.dart';
 
 class Details extends StatefulWidget {
-  const Details({super.key});
+  final String listId;
+  const Details({super.key, required this.listId});
 
   @override
   State<Details> createState() => _DetailsState();
@@ -16,6 +17,7 @@ class _DetailsState extends State<Details> {
   @override
   void initState() {
     super.initState();
+    snapshot = getShoppingListDetails(widget.listId);
   }
 
   @override
