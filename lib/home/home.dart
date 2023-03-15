@@ -36,8 +36,7 @@ class _HomeState extends State<Home> {
           )
         ],
       ),
-      body: Container(
-        // color: Theme.of(context).colorScheme.primary,
+      body: SizedBox(
         width: screenWidth,
         height: screenHeight,
         child: Column(
@@ -67,7 +66,7 @@ class _HomeState extends State<Home> {
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
-                            Navigator.pushNamed(context, '/details', arguments: doc.id);
+                            Navigator.pushNamed(context, '/details', arguments: doc.reference.id);
                           },
                         ),
                       );
@@ -84,7 +83,7 @@ class _HomeState extends State<Home> {
         tooltip: 'Add',
         backgroundColor: Theme.of(context).colorScheme.secondary,
         child: const Icon(Icons.add),
-      ), // This
+      ),
     );
   }
 }
