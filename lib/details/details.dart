@@ -13,11 +13,20 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
+  String _listTitle = 'loading...';
 
   @override
   void initState() {
     super.initState();
     snapshot = getShoppingListDetails(widget.listId);
+    _getListTitle();
+  }
+
+  Future<void> _getListTitle() async {
+    String title = await getShoppingListTitle(widget.listId);
+    setState(() {
+      _listTitle = title;
+    });
   }
 
   @override
@@ -27,18 +36,58 @@ class _DetailsState extends State<Details> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Details'),
+        title: Text(_listTitle),
         centerTitle: true,
       ),
       body: SizedBox(
         width: screenWidth,
         height: screenHeight,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Fluttertoast.showToast(msg: 'Dodajesz'),
-        tooltip: 'Add',
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        child: const Icon(Icons.add),
+        child: Column(
+          children: [
+            const SizedBox(height: 10),
+            Expanded(
+              child: StreamBuilder<QuerySnapshot>(
+                stream: snapshot,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.all(8),
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var doc = snapshot.data!.docs[index];
+                      return Card(
+                        child: ListTile(
+                          title: Row(
+                            children: [
+                              Checkbox(
+                                value: doc['bought'],
+                                onChanged: (bool? value) {},
+                              ),
+                              Expanded(
+                                child: Text(doc['name']),
+                              ),
+                              Text(
+                                '${doc['price'].toStringAsFixed(2)}zł',
+                                // style: const TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
