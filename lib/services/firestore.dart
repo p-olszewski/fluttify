@@ -13,6 +13,11 @@ Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingLists() {
   return _database.collection('shopping_lists').where('users', arrayContains: '$_uid').where('archived', isEqualTo: false).snapshots();
 }
 
+Future<String> getShoppingListTitle(String id) async {
+  final doc = await FirebaseFirestore.instance.collection('shopping_lists').doc(id).get();
+  return doc['title'];
+}
+
 Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListDetails(String id) {
   return _database.collection('shopping_lists').doc(id).collection('products').snapshots();
 }
