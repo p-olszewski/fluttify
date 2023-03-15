@@ -31,7 +31,11 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Login(),
         '/home': (context) => const Home(),
-        '/details': (context) => const Details(listId: ''),
+        // '/details': (context) => const Details(listId: ''),
+        '/details': (context) {
+          final listId = ModalRoute.of(context)!.settings.arguments as String;
+          return Details(listId: listId);
+        },
       },
     );
   }
