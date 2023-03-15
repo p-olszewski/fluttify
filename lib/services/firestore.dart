@@ -11,19 +11,11 @@ addList(ShoppingList newList) {
 }
 
 Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingLists() {
-  return _database
-      .collection('shopping_lists')
-      .where('users', arrayContains: '$_uid')
-      .snapshots();
+  return _database.collection('shopping_lists').where('users', arrayContains: '$_uid').where('archived', isEqualTo: false).snapshots();
 }
 
 getShoppingListDetails(String id) {
-  _database
-      .collection('shopping_lists')
-      .doc(id)
-      .collection('products')
-      .get()
-      .then((value) {
+  _database.collection('shopping_lists').doc(id).collection('products').get().then((value) {
     Fluttertoast.showToast(msg: value.toString());
   });
 }
