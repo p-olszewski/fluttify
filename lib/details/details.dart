@@ -13,13 +13,11 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
-  late String _listTitle;
 
   @override
   void initState() {
     super.initState();
     snapshot = getShoppingListDetails(widget.listId);
-    _listTitle = widget.listTitle;
   }
 
   @override
@@ -29,7 +27,7 @@ class _DetailsState extends State<Details> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_listTitle),
+        title: Text(widget.listTitle),
         centerTitle: true,
       ),
       body: SizedBox(
