@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttify/details/details.dart';
 import 'package:fluttify/home/home.dart';
 import 'package:fluttify/login/login.dart';
 
@@ -30,6 +31,12 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const Login(),
         '/home': (context) => const Home(),
+        '/details': (context) {
+          final Map<String, dynamic> arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          final String listId = arguments['id'] as String;
+          final String listTitle = arguments['title'] as String;
+          return Details(listId: listId, listTitle: listTitle);
+        },
       },
     );
   }
