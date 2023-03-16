@@ -32,8 +32,10 @@ class MyApp extends StatelessWidget {
         '/': (context) => const Login(),
         '/home': (context) => const Home(),
         '/details': (context) {
-          final listId = ModalRoute.of(context)!.settings.arguments as String;
-          return Details(listId: listId);
+          final Map<String, dynamic> arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+          final String listId = arguments['id'] as String;
+          final String listTitle = arguments['title'] as String;
+          return Details(listId: listId, listTitle: listTitle);
         },
       },
     );

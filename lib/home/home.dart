@@ -62,11 +62,18 @@ class _HomeState extends State<Home> {
                       return Card(
                         child: ListTile(
                           title: Text(doc['title']),
-                          subtitle: Text('Suma: ${doc['sum'].toStringAsFixed(2)}zł'),
+                          subtitle: Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
-                            Navigator.pushNamed(context, '/details', arguments: doc.reference.id);
+                            Navigator.pushNamed(
+                              context,
+                              '/details',
+                              arguments: {
+                                'id': doc.reference.id,
+                                'title': doc['title'],
+                              },
+                            );
                           },
                         ),
                       );

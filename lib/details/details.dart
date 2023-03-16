@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/firestore.dart';
 
 class Details extends StatefulWidget {
   final String listId;
-  const Details({super.key, required this.listId});
+  final String listTitle;
+  const Details({super.key, required this.listId, required this.listTitle});
 
   @override
   State<Details> createState() => _DetailsState();
@@ -13,20 +13,13 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
-  String _listTitle = 'loading...';
+  late String _listTitle;
 
   @override
   void initState() {
     super.initState();
     snapshot = getShoppingListDetails(widget.listId);
-    _getListTitle();
-  }
-
-  Future<void> _getListTitle() async {
-    String title = await getShoppingListTitle(widget.listId);
-    setState(() {
-      _listTitle = title;
-    });
+    _listTitle = widget.listTitle;
   }
 
   @override
@@ -74,7 +67,7 @@ class _DetailsState extends State<Details> {
                                 child: Text(doc['name']),
                               ),
                               Text(
-                                '${doc['price'].toStringAsFixed(2)}zł',
+                                '${doc['price'].toStringAsFixed(2)} zł',
                                 // style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ],
