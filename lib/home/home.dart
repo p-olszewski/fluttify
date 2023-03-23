@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/firestore.dart';
 
+import '../shared/custom_textformfield.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -23,6 +25,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
+    final TextEditingController _newListController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
@@ -62,7 +65,8 @@ class _HomeState extends State<Home> {
                       return Card(
                         child: ListTile(
                           title: Text(doc['title']),
-                          subtitle: Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
+                          subtitle:
+                              Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
@@ -86,7 +90,27 @@ class _HomeState extends State<Home> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Fluttertoast.showToast(msg: 'Dodajesz'),
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => SimpleDialog(
+            title: const Text('Create shopping list'),
+            contentPadding: const EdgeInsets.all(20.0),
+            children: [
+              CustomTextFormField(
+                controller: _newListController,
+                labelText: "Shopping list name",
+                hintText: "my first list",
+                obscure: false,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Create'),
+              ),
+            ],
+          ),
+        ),
         tooltip: 'Add',
         backgroundColor: Theme.of(context).colorScheme.secondary,
         child: const Icon(Icons.add),
