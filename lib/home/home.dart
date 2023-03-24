@@ -14,6 +14,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
+  final TextEditingController _newListController = TextEditingController();
 
   @override
   void initState() {
@@ -25,7 +26,6 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
-    final TextEditingController _newListController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(
