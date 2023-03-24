@@ -93,20 +93,20 @@ class _HomeState extends State<Home> {
         onPressed: () => showDialog(
           context: context,
           builder: (context) => SimpleDialog(
-            title: const Text('Create shopping list'),
+            title: const Text('Nowa lista zakupów'),
             contentPadding: const EdgeInsets.all(20.0),
             children: [
               CustomTextFormField(
                 controller: _newListController,
-                labelText: "Shopping list name",
-                hintText: "my first list",
+                labelText: "Nazwa listy",
+                hintText: "Nazwa listy",
                 obscure: false,
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Create'),
+                child: const Text('Stwórz'),
               ),
             ],
           ),
