@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/firestore.dart';
 
+import '../shared/custom_textformfield.dart';
+
 class Home extends StatefulWidget {
   const Home({super.key});
 
@@ -12,6 +14,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
+  final TextEditingController _newListController = TextEditingController();
 
   @override
   void initState() {
@@ -62,7 +65,8 @@ class _HomeState extends State<Home> {
                       return Card(
                         child: ListTile(
                           title: Text(doc['title']),
-                          subtitle: Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
+                          subtitle:
+                              Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
@@ -86,7 +90,27 @@ class _HomeState extends State<Home> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Fluttertoast.showToast(msg: 'Dodajesz'),
+        onPressed: () => showDialog(
+          context: context,
+          builder: (context) => SimpleDialog(
+            title: const Text('Nowa lista zakupów'),
+            contentPadding: const EdgeInsets.all(20.0),
+            children: [
+              CustomTextFormField(
+                controller: _newListController,
+                labelText: "Nazwa listy",
+                hintText: "Nazwa listy",
+                obscure: false,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Stwórz'),
+              ),
+            ],
+          ),
+        ),
         tooltip: 'Add',
         backgroundColor: Theme.of(context).colorScheme.secondary,
         child: const Icon(Icons.add),
