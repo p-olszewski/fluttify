@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttify/services/firestore.dart';
+import 'package:fluttify/shared/shared.dart';
 
 class Details extends StatefulWidget {
   final String listId;
@@ -13,11 +14,20 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     snapshot = getShoppingListDetails(widget.listId);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _priceController.dispose();
+    super.dispose();
   }
 
   @override
@@ -35,7 +45,11 @@ class _DetailsState extends State<Details> {
         height: screenHeight,
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            InputRow(
+              nameController: _nameController,
+              priceController: _priceController,
+              widget: widget,
+            ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: snapshot,
@@ -53,25 +67,7 @@ class _DetailsState extends State<Details> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (BuildContext context, int index) {
                       var doc = snapshot.data!.docs[index];
-                      return Card(
-                        child: ListTile(
-                          title: Row(
-                            children: [
-                              Checkbox(
-                                value: doc['bought'],
-                                onChanged: (bool? value) {},
-                              ),
-                              Expanded(
-                                child: Text(doc['name']),
-                              ),
-                              Text(
-                                '${doc['price'].toStringAsFixed(2)} zł',
-                                // style: const TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                      return ListElementCard(doc: doc);
                     },
                   );
                 },
