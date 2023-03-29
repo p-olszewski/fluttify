@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttify/models/list_element.dart';
 import 'package:fluttify/services/firestore.dart';
+import 'package:fluttify/shared/shared.dart';
 
 class Details extends StatefulWidget {
   final String listId;
@@ -36,49 +35,6 @@ class _DetailsState extends State<Details> {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
-    var inputRow = Padding(
-      padding: const EdgeInsets.all(15),
-      child: Row(
-        children: [
-          Flexible(
-            flex: 4,
-            child: TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(labelText: 'Nazwa produktu *'),
-            ),
-          ),
-          const SizedBox(width: 10),
-          Flexible(
-            flex: 1,
-            child: TextField(
-              controller: _priceController,
-              decoration: const InputDecoration(labelText: 'Cena', hintText: "zł"),
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10),
-          SizedBox(
-            height: 40,
-            width: 80,
-            child: ElevatedButton(
-              onPressed: () {
-                final name = _nameController.text;
-                final price = _priceController.text.isEmpty ? 0.00 : double.tryParse(_priceController.text);
-                addListElement(ListElement(name: name, price: price!), widget.listId);
-                _nameController.clear();
-                _priceController.clear();
-                SystemChannels.textInput.invokeMethod('TextInput.hide');
-              },
-              child: const Text("Dodaj"),
-            ),
-          ),
-        ],
-      ),
-    );
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.listTitle),
@@ -89,7 +45,11 @@ class _DetailsState extends State<Details> {
         height: screenHeight,
         child: Column(
           children: [
-            inputRow,
+            InputRow(
+              nameController: _nameController,
+              priceController: _priceController,
+              widget: widget,
+            ),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: snapshot,
@@ -107,24 +67,7 @@ class _DetailsState extends State<Details> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (BuildContext context, int index) {
                       var doc = snapshot.data!.docs[index];
-                      return Card(
-                        child: ListTile(
-                          title: Row(
-                            children: [
-                              Checkbox(
-                                value: doc['bought'],
-                                onChanged: (bool? value) {},
-                              ),
-                              Expanded(
-                                child: Text(doc['name']),
-                              ),
-                              Text(
-                                '${doc['price'].toStringAsFixed(2)} zł',
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
+                      return ListElementCard(doc: doc);
                     },
                   );
                 },
