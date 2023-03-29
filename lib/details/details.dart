@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttify/models/list_element.dart';
 import 'package:fluttify/services/firestore.dart';
 
 class Details extends StatefulWidget {
@@ -13,7 +15,8 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
-  final TextEditingController _newElementController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   @override
   void initState() {
@@ -22,31 +25,54 @@ class _DetailsState extends State<Details> {
   }
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _priceController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
     var inputRow = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.all(15),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Flexible(
-            flex: 2,
+            flex: 4,
             child: TextField(
-              controller: _newElementController,
-              decoration: const InputDecoration(labelText: 'Nazwa produktu'),
+              controller: _nameController,
+              decoration: const InputDecoration(labelText: 'Nazwa produktu *'),
             ),
           ),
+          const SizedBox(width: 10),
           Flexible(
             flex: 1,
-            child: SizedBox(
-              height: 40,
-              width: 80,
-              child: ElevatedButton(
-                onPressed: () {},
-                child: const Text("Dodaj"),
-              ),
+            child: TextField(
+              controller: _priceController,
+              decoration: const InputDecoration(labelText: 'Cena', hintText: "zł"),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          SizedBox(
+            height: 40,
+            width: 80,
+            child: ElevatedButton(
+              onPressed: () {
+                final name = _nameController.text;
+                final price = _priceController.text.isEmpty ? 0.00 : double.tryParse(_priceController.text);
+                addListElement(ListElement(name: name, price: price!), widget.listId);
+                _nameController.clear();
+                _priceController.clear();
+                SystemChannels.textInput.invokeMethod('TextInput.hide');
+              },
+              child: const Text("Dodaj"),
             ),
           ),
         ],
@@ -94,7 +120,6 @@ class _DetailsState extends State<Details> {
                               ),
                               Text(
                                 '${doc['price'].toStringAsFixed(2)} zł',
-                                // style: const TextStyle(fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),

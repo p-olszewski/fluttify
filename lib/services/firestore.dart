@@ -6,12 +6,12 @@ import 'package:fluttify/models/list_element.dart';
 final FirebaseFirestore _database = FirebaseFirestore.instance;
 final String? _uid = FirebaseAuth.instance.currentUser?.uid;
 
-addList(ShoppingList newList) {
-  _database.collection('shopping_lists').add(newList.toJson());
-}
-
 Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingLists() {
   return _database.collection('shopping_lists').where('users', arrayContains: '$_uid').where('archived', isEqualTo: false).snapshots();
+}
+
+addList(ShoppingList newList) {
+  _database.collection('shopping_lists').add(newList.toJson());
 }
 
 Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListDetails(String id) {
