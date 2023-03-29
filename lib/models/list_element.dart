@@ -1,9 +1,9 @@
 class ListElement {
   String name;
-  double? price;
+  double price;
   bool bought;
 
-  ListElement({required this.name, this.price, this.bought = false});
+  ListElement({required this.name, this.price = 0.0, this.bought = false});
 
   ListElement.fromJson(Map<String, dynamic> json)
       : name = json['name'],
