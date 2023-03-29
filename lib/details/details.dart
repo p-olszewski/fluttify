@@ -40,9 +40,13 @@ class _DetailsState extends State<Details> {
           ),
           Flexible(
             flex: 1,
-            child: ElevatedButton(
-              onPressed: () {},
-              child: const Text("Dodaj"),
+            child: SizedBox(
+              height: 40,
+              width: 80,
+              child: ElevatedButton(
+                onPressed: () {},
+                child: const Text("Dodaj"),
+              ),
             ),
           ),
         ],
