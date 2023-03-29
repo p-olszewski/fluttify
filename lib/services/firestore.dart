@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttify/models/shopping_list.dart';
+import 'package:fluttify/models/list_element.dart';
 
 final FirebaseFirestore _database = FirebaseFirestore.instance;
 final String? _uid = FirebaseAuth.instance.currentUser?.uid;
@@ -15,4 +16,8 @@ Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingLists() {
 
 Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListDetails(String id) {
   return _database.collection('shopping_lists').doc(id).collection('products').snapshots();
+}
+
+addListElement(ListElement newElement, String listId) {
+  _database.collection('/shopping_lists/$listId/products').add(newElement.toJson());
 }
