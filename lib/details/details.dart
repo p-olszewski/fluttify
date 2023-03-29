@@ -13,6 +13,7 @@ class Details extends StatefulWidget {
 
 class _DetailsState extends State<Details> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
+  final TextEditingController _newElementController = TextEditingController();
 
   @override
   void initState() {
@@ -25,6 +26,29 @@ class _DetailsState extends State<Details> {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
 
+    var inputRow = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Flexible(
+            flex: 2,
+            child: TextField(
+              controller: _newElementController,
+              decoration: const InputDecoration(labelText: 'Nazwa produktu'),
+            ),
+          ),
+          Flexible(
+            flex: 1,
+            child: ElevatedButton(
+              onPressed: () {},
+              child: const Text("Dodaj"),
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.listTitle),
@@ -35,7 +59,7 @@ class _DetailsState extends State<Details> {
         height: screenHeight,
         child: Column(
           children: [
-            const SizedBox(height: 10),
+            inputRow,
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: snapshot,
