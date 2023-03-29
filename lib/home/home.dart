@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/firestore.dart';
-
-import '../shared/custom_textformfield.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
