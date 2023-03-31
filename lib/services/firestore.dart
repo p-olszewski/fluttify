@@ -7,48 +7,32 @@ final FirebaseFirestore _database = FirebaseFirestore.instance;
 final String? _uid = FirebaseAuth.instance.currentUser?.uid;
 
 Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingLists() {
-  return _database
-      .collection('shopping_lists')
-      .where('users', arrayContains: '$_uid')
-      .where('archived', isEqualTo: false)
-      .snapshots();
+  return _database.collection('shopping_lists').where('users', arrayContains: '$_uid').where('archived', isEqualTo: false).snapshots();
 }
 
-addList(ShoppingList newList) {
+addShoppingList(ShoppingList newList) {
   _database.collection('shopping_lists').add(newList.toJson());
 }
 
-deleteList(String listId) {
-  _database
-      .collection('shopping_lists')
-      .doc(listId)
-      .collection('products')
-      .get()
-      .then(
+deleteShoppingList(String listId) {
+  _database.collection('shopping_lists').doc(listId).collection('products').get().then(
     (QuerySnapshot<Map<String, dynamic>> value) {
       for (var element in value.docs) {
-        _database
-            .collection('shopping_lists')
-            .doc(listId)
-            .collection('products')
-            .doc(element.id)
-            .delete();
+        _database.collection('shopping_lists').doc(listId).collection('products').doc(element.id).delete();
       }
       _database.collection('shopping_lists').doc(listId).delete();
     },
   );
 }
 
-Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListDetails(String id) {
-  return _database
-      .collection('shopping_lists')
-      .doc(id)
-      .collection('products')
-      .snapshots();
+Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListElements(String id) {
+  return _database.collection('shopping_lists/$id/products').snapshots();
 }
 
-addListElement(ListElement newElement, String listId) {
-  _database
-      .collection('/shopping_lists/$listId/products')
-      .add(newElement.toJson());
+addListElement(ListElement newElement, String id) {
+  _database.collection('/shopping_lists/$id/products').add(newElement.toJson());
+}
+
+deleteListElement(String listId, String elementId) {
+  _database.doc('/shopping_lists/$listId/products/$elementId').delete();
 }

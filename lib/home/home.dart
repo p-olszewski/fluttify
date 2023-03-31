@@ -65,8 +65,7 @@ class _HomeState extends State<Home> {
                       return Card(
                         child: ListTile(
                           title: Text(doc['title']),
-                          subtitle:
-                              Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
+                          subtitle: Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
@@ -87,7 +86,7 @@ class _HomeState extends State<Home> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      deleteList(doc.reference.id);
+                                      deleteShoppingList(doc.reference.id);
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text('Tak'),
@@ -120,8 +119,7 @@ class _HomeState extends State<Home> {
                   content: TextField(
                     controller: _newListController,
                     autofocus: true,
-                    decoration: const InputDecoration(
-                        labelText: 'Nazwa listy', hintText: 'np. Biedronka'),
+                    decoration: const InputDecoration(labelText: 'Nazwa listy', hintText: 'np. Biedronka'),
                   ),
                   actions: [
                     TextButton(
@@ -130,7 +128,7 @@ class _HomeState extends State<Home> {
                         var userId = getUserId();
                         if (userId != null) {
                           var title = _newListController.text;
-                          addList(ShoppingList(title, users: [userId]));
+                          addShoppingList(ShoppingList(title, users: [userId]));
                           Fluttertoast.showToast(
                             msg: 'Lista $title została dodana',
                           );
