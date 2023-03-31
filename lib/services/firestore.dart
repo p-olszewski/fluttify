@@ -26,7 +26,7 @@ deleteShoppingList(String listId) {
 }
 
 Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListElements(String id) {
-  return _database.collection('shopping_lists/$id/products').snapshots();
+  return _database.collection('shopping_lists/$id/products').orderBy('timestamp').snapshots();
 }
 
 addListElement(ListElement newElement, String id) {

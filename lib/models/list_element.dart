@@ -4,7 +4,7 @@ class ListElement {
   String name;
   double price;
   bool bought;
-  dynamic timestamp;
+  FieldValue? timestamp;
 
   ListElement({required this.name, this.price = 0.0, this.bought = false, this.timestamp});
 
