@@ -1,7 +1,8 @@
+
 import 'package:flutter/material.dart';
 
-class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField({
+class LoginTextFormField extends StatelessWidget {
+  const LoginTextFormField({
     Key? key,
     required this.controller,
     required this.labelText,
@@ -32,8 +33,7 @@ class CustomTextFormField extends StatelessWidget {
           hintStyle: const TextStyle(color: Color.fromARGB(255, 144, 161, 252)),
           hintText: hintText,
           focusedBorder: UnderlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).colorScheme.secondary),
+            borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary),
           ),
         ),
       ),

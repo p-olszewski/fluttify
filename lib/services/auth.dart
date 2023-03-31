@@ -50,3 +50,7 @@ Future<bool> signOut() async {
     return false;
   }
 }
+
+String? getUserId() {
+  return _auth.currentUser?.uid;
+}
