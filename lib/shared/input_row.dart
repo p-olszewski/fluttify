@@ -27,6 +27,7 @@ class _InputRowState extends State<InputRow> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 3,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
         child: Row(
@@ -38,19 +39,19 @@ class _InputRowState extends State<InputRow> {
                 controller: widget._nameController,
                 decoration: InputDecoration(
                   labelText: 'Nazwa produktu *',
-                  border: const OutlineInputBorder(),
+                  border: const UnderlineInputBorder(),
                   errorText: _nameErrorText,
                 ),
               ),
             ),
-            const SizedBox(width: 5),
+            const SizedBox(width: 10),
             Flexible(
               flex: 1,
               child: TextField(
                 controller: widget._priceController,
                 decoration: const InputDecoration(
                   labelText: 'Cena',
-                  border: OutlineInputBorder(),
+                  border: UnderlineInputBorder(),
                   hintText: "zł",
                 ),
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -60,9 +61,8 @@ class _InputRowState extends State<InputRow> {
               ),
             ),
             const SizedBox(width: 10),
-            SizedBox(
-              height: 58,
-              width: 100,
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
               child: ElevatedButton(
                 onPressed: () {
                   if (widget._nameController.text.isEmpty) {

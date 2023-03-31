@@ -20,7 +20,7 @@ class _DetailsState extends State<Details> {
   @override
   void initState() {
     super.initState();
-    snapshot = getShoppingListDetails(widget.listId);
+    snapshot = getShoppingListElements(widget.listId);
   }
 
   @override
@@ -67,7 +67,7 @@ class _DetailsState extends State<Details> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (BuildContext context, int index) {
                       var doc = snapshot.data!.docs[index];
-                      return ListElementCard(doc: doc);
+                      return ListElementCard(listId: widget.listId, doc: doc);
                     },
                   );
                 },
