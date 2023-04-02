@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/firestore.dart';
 
@@ -17,6 +18,7 @@ class UserManagementDialog extends StatefulWidget {
 class _UserManagementDialogState extends State<UserManagementDialog> {
   final TextEditingController _emailController = TextEditingController();
   late Future<dynamic> userEmails;
+  String? _nameErrorText;
 
   @override
   void initState() {
@@ -32,6 +34,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
 
   @override
   Widget build(BuildContext context) {
+    // userEmails = getShoppingListUserEmails(widget.listId);
     return AlertDialog(
       title: const Text('Zarządzaj użytkownikami'),
       content: Column(
@@ -74,9 +77,10 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
               autofocus: true,
               controller: _emailController,
               textAlign: TextAlign.left,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Email nowego użytkownika',
                 hintText: 'np. test@test.com',
+                errorText: _nameErrorText,
               ),
             ),
           )
@@ -89,14 +93,21 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
         ),
         ElevatedButton(
           child: const Text('Udostępnij'),
-          onPressed: () {
-            Fluttertoast.showToast(
-              msg: 'Udostępniono listę',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              fontSize: 16.0,
-            );
+          onPressed: () async {
+            if (_emailController.text.isEmpty) {
+              setState(() => _nameErrorText = 'Pole wymagane');
+              return;
+            }
+            addUserToShoppingList(widget.listId, _emailController.text).then((value) {
+              SystemChannels.textInput.invokeMethod('TextInput.hide');
+              setState(() => _nameErrorText = null);
+              if (!mounted) return;
+              Navigator.of(context).pop();
+              Fluttertoast.showToast(msg: 'Udostępniono listę dla ${_emailController.text}');
+              _emailController.clear();
+            }).catchError((error) {
+              setState(() => _nameErrorText = 'Użytkownik o podanym adresie nie istnieje!');
+            });
           },
         ),
       ],

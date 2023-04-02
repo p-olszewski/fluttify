@@ -63,3 +63,13 @@ Future<dynamic> getShoppingListUserEmails(String listId) async {
 
   return userEmails.where((email) => email != null).cast<String>().toList();
 }
+
+addUserToShoppingList(String listId, String userEmail) async {
+  final userSnapshot = await _database.collection('users').where('email', isEqualTo: userEmail).get();
+  if (userSnapshot.docs.isEmpty) {
+    throw Exception('Nie znaleziono użytkownika $userEmail.');
+  }
+  _database.doc('shopping_lists/$listId').update({
+    'users': FieldValue.arrayUnion([userSnapshot.docs.first.id]),
+  });
+}
