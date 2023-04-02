@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttify/services/firestore.dart';
 import 'package:fluttify/shared/shared.dart';
+import 'package:fluttify/shared/user_management_dialog.dart';
 
 class Details extends StatefulWidget {
   final String listId;
@@ -44,7 +45,7 @@ class _DetailsState extends State<Details> {
           IconButton(
             onPressed: () => showDialog(
               context: context,
-              builder: (context) => UserManagementDialog(addUserController: _addUserController),
+              builder: (context) => UserManagementDialog(addUserController: _addUserController, listId: widget.listId),
             ),
             icon: const Icon(Icons.manage_accounts),
           ),

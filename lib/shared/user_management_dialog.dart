@@ -5,9 +5,11 @@ class UserManagementDialog extends StatefulWidget {
   const UserManagementDialog({
     super.key,
     required TextEditingController addUserController,
+    required this.listId,
   }) : _addUserController = addUserController;
 
   final TextEditingController _addUserController;
+  final String listId;
 
   @override
   State<UserManagementDialog> createState() => _UserManagementDialogState();
