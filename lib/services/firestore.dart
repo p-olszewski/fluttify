@@ -67,7 +67,12 @@ Future<dynamic> getShoppingListUserEmails(String listId) async {
 addUserToShoppingList(String listId, String userEmail) async {
   final userSnapshot = await _database.collection('users').where('email', isEqualTo: userEmail).get();
   if (userSnapshot.docs.isEmpty) {
-    throw Exception('Nie znaleziono użytkownika $userEmail.');
+    throw 'Nie znaleziono użytkownika $userEmail.';
+  }
+  final shoppingListSnapshot = await _database.doc('shopping_lists/$listId').get();
+  final userIds = List.from((shoppingListSnapshot.data())?['users']);
+  if (userIds.contains(userSnapshot.docs.first.id)) {
+    throw 'Użytkownik jest już dodany do tej listy.';
   }
   _database.doc('shopping_lists/$listId').update({
     'users': FieldValue.arrayUnion([userSnapshot.docs.first.id]),
