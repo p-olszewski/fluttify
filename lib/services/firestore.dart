@@ -41,8 +41,7 @@ deleteListElement(String listId, String elementId) {
 
 updateSumPrice(String listId) async {
   final listRef = _database.doc('shopping_lists/$listId');
-  final productsRef = listRef.collection('products');
-  final productsSnapshot = await productsRef.get();
+  final productsSnapshot = await listRef.collection('products').get();
   double sum = 0;
 
   for (var element in productsSnapshot.docs) {
@@ -53,4 +52,14 @@ updateSumPrice(String listId) async {
   await listRef.update({
     'sum': sum,
   });
+}
+
+getShoppingListUserEmails(String listId) async {
+  final shoppingListSnapshot = await _database.doc('shopping_lists/$listId').get();
+  final userIds = List.from((shoppingListSnapshot.data())?['users']);
+  final userEmails = await Future.wait(
+    userIds.map((userId) async => (await _database.doc('users/$userId').get()).data()!['email']),
+  );
+
+  return userEmails.cast<String>();
 }
