@@ -41,8 +41,7 @@ deleteListElement(String listId, String elementId) {
 
 updateSumPrice(String listId) async {
   final listRef = _database.doc('shopping_lists/$listId');
-  final productsRef = listRef.collection('products');
-  final productsSnapshot = await productsRef.get();
+  final productsSnapshot = await listRef.collection('products').get();
   double sum = 0;
 
   for (var element in productsSnapshot.docs) {
@@ -52,5 +51,41 @@ updateSumPrice(String listId) async {
 
   await listRef.update({
     'sum': sum,
+  });
+}
+
+Future<dynamic> getShoppingListUserEmails(String listId) async {
+  final shoppingListSnapshot = await _database.doc('shopping_lists/$listId').get();
+  final userIds = List.from((shoppingListSnapshot.data())?['users']);
+  final userEmails = await Future.wait(
+    userIds.map((userId) async => (await _database.doc('users/$userId').get()).data()!['email']),
+  );
+
+  return userEmails.where((email) => email != null).cast<String>().toList();
+}
+
+addUserToShoppingList(String listId, String userEmail) async {
+  final userSnapshot = await _database.collection('users').where('email', isEqualTo: userEmail).get();
+  if (userSnapshot.docs.isEmpty) {
+    throw 'Nie znaleziono użytkownika $userEmail.';
+  }
+  final shoppingListSnapshot = await _database.doc('shopping_lists/$listId').get();
+  final userIds = List.from((shoppingListSnapshot.data())?['users']);
+  if (userIds.contains(userSnapshot.docs.first.id)) {
+    throw 'Użytkownik jest już dodany do tej listy.';
+  }
+  _database.doc('shopping_lists/$listId').update({
+    'users': FieldValue.arrayUnion([userSnapshot.docs.first.id]),
+  });
+}
+
+deleteUserFromShoppingList(String listId, String userEmail) async {
+  final userSnapshot = await _database.collection('users').where('email', isEqualTo: userEmail).get();
+  if (userSnapshot.docs.isEmpty) {
+    throw 'Nie znaleziono użytkownika $userEmail.';
+  }
+  final userId = userSnapshot.docs.first.id;
+  _database.doc('shopping_lists/$listId').update({
+    'users': FieldValue.arrayRemove([userId]),
   });
 }
