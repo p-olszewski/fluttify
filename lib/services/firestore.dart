@@ -78,3 +78,14 @@ addUserToShoppingList(String listId, String userEmail) async {
     'users': FieldValue.arrayUnion([userSnapshot.docs.first.id]),
   });
 }
+
+deleteUserFromShoppingList(String listId, String userEmail) async {
+  final userSnapshot = await _database.collection('users').where('email', isEqualTo: userEmail).get();
+  if (userSnapshot.docs.isEmpty) {
+    throw 'Nie znaleziono użytkownika $userEmail.';
+  }
+  final userId = userSnapshot.docs.first.id;
+  _database.doc('shopping_lists/$listId').update({
+    'users': FieldValue.arrayRemove([userId]),
+  });
+}

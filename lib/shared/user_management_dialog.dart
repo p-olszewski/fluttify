@@ -34,7 +34,6 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
 
   @override
   Widget build(BuildContext context) {
-    // userEmails = getShoppingListUserEmails(widget.listId);
     return AlertDialog(
       title: const Text('Zarządzaj użytkownikami'),
       content: Column(
@@ -57,13 +56,9 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
                       label: Text(snapshot.data![index]),
                       labelStyle: const TextStyle(fontSize: 12),
                       onDeleted: () {
-                        Fluttertoast.showToast(
-                          msg: 'Usunięto użytkownika z listy',
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          fontSize: 16.0,
-                        );
+                        deleteUserFromShoppingList(widget.listId, snapshot.data![index]);
+                        Navigator.of(context).pop();
+                        Fluttertoast.showToast(msg: 'Usunięto ${snapshot.data![index]} z listy.');
                       },
                     );
                   },
@@ -106,7 +101,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
               Fluttertoast.showToast(msg: 'Udostępniono listę dla ${_emailController.text}');
               _emailController.clear();
             }).catchError((error) {
-              setState(() => _nameErrorText = 'Użytkownik o podanym adresie nie istnieje!');
+              setState(() => _nameErrorText = error.toString());
             });
           },
         ),
