@@ -25,14 +25,32 @@ deleteShoppingList(String listId) {
   );
 }
 
-Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListElements(String id) {
-  return _database.collection('shopping_lists/$id/products').orderBy('timestamp').snapshots();
+Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListElements(String listId) {
+  return _database.collection('shopping_lists/$listId/products').orderBy('timestamp').snapshots();
 }
 
-addListElement(ListElement newElement, String id) {
-  _database.collection('/shopping_lists/$id/products').add(newElement.toJson());
+addListElement(ListElement newElement, String listId) {
+  _database.collection('/shopping_lists/$listId/products').add(newElement.toJson());
+  updateSumPrice(listId);
 }
 
 deleteListElement(String listId, String elementId) {
   _database.doc('/shopping_lists/$listId/products/$elementId').delete();
+  updateSumPrice(listId);
+}
+
+updateSumPrice(String listId) async {
+  final listRef = _database.doc('shopping_lists/$listId');
+  final productsRef = listRef.collection('products');
+  final productsSnapshot = await productsRef.get();
+  double sum = 0;
+
+  for (var element in productsSnapshot.docs) {
+    final price = element.data()['price'] ?? 0;
+    sum += price;
+  }
+
+  await listRef.update({
+    'sum': sum,
+  });
 }
