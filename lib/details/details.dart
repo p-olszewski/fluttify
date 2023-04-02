@@ -17,7 +17,6 @@ class _DetailsState extends State<Details> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
-  final TextEditingController _addUserController = TextEditingController();
 
   @override
   void initState() {
@@ -45,7 +44,7 @@ class _DetailsState extends State<Details> {
           IconButton(
             onPressed: () => showDialog(
               context: context,
-              builder: (context) => UserManagementDialog(addUserController: _addUserController, listId: widget.listId),
+              builder: (context) => UserManagementDialog(listId: widget.listId),
             ),
             icon: const Icon(Icons.manage_accounts),
           ),

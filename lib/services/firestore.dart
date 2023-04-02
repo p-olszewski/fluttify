@@ -54,12 +54,12 @@ updateSumPrice(String listId) async {
   });
 }
 
-getShoppingListUserEmails(String listId) async {
+Future<dynamic> getShoppingListUserEmails(String listId) async {
   final shoppingListSnapshot = await _database.doc('shopping_lists/$listId').get();
   final userIds = List.from((shoppingListSnapshot.data())?['users']);
   final userEmails = await Future.wait(
     userIds.map((userId) async => (await _database.doc('users/$userId').get()).data()!['email']),
   );
 
-  return userEmails.cast<String>();
+  return userEmails.where((email) => email != null).cast<String>().toList();
 }

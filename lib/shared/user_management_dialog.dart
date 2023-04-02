@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fluttify/services/firestore.dart';
 
 class UserManagementDialog extends StatefulWidget {
   const UserManagementDialog({
     super.key,
-    required TextEditingController addUserController,
     required this.listId,
-  }) : _addUserController = addUserController;
+  });
 
-  final TextEditingController _addUserController;
   final String listId;
 
   @override
@@ -16,6 +15,21 @@ class UserManagementDialog extends StatefulWidget {
 }
 
 class _UserManagementDialogState extends State<UserManagementDialog> {
+  final TextEditingController _emailController = TextEditingController();
+  late Future<dynamic> userEmails;
+
+  @override
+  void initState() {
+    super.initState();
+    userEmails = getShoppingListUserEmails(widget.listId);
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -23,36 +37,42 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Chip(
-            label: const Text('tomasz.baltonowski@test.com'),
-            labelStyle: const TextStyle(fontSize: 12),
-            onDeleted: () {
-              Fluttertoast.showToast(
-                msg: 'Usunięto użytkownika z listy',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                fontSize: 16.0,
-              );
-            },
-          ),
-          Chip(
-            label: const Text('krzysztof.kolumb@test.com'),
-            labelStyle: const TextStyle(fontSize: 12),
-            onDeleted: () {
-              Fluttertoast.showToast(
-                msg: 'Usunięto użytkownika z listy',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                fontSize: 16.0,
+          FutureBuilder(
+            future: userEmails,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return SizedBox(
+                height: 150,
+                width: 200,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    return Chip(
+                      label: Text(snapshot.data![index]),
+                      labelStyle: const TextStyle(fontSize: 12),
+                      onDeleted: () {
+                        Fluttertoast.showToast(
+                          msg: 'Usunięto użytkownika z listy',
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          fontSize: 16.0,
+                        );
+                      },
+                    );
+                  },
+                ),
               );
             },
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: TextField(
-              controller: widget._addUserController,
+              autofocus: true,
+              controller: _emailController,
               textAlign: TextAlign.left,
               decoration: const InputDecoration(
                 labelText: 'Email nowego użytkownika',
@@ -64,9 +84,12 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
       ),
       actions: [
         TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Anuluj'),
+        ),
+        ElevatedButton(
           child: const Text('Udostępnij'),
           onPressed: () {
-            widget._addUserController.clear();
             Fluttertoast.showToast(
               msg: 'Udostępniono listę',
               toastLength: Toast.LENGTH_SHORT,
