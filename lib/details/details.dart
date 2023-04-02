@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/firestore.dart';
 import 'package:fluttify/shared/shared.dart';
 
@@ -44,67 +43,9 @@ class _DetailsState extends State<Details> {
         actions: [
           IconButton(
             onPressed: () => showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                      title: const Text('Zarządzaj użytkownikami'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Chip(
-                            label: const Text('tomasz.baltonowski@test.com'),
-                            labelStyle: const TextStyle(fontSize: 12),
-                            onDeleted: () {
-                              Fluttertoast.showToast(
-                                msg: 'Usunięto użytkownika z listy',
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                fontSize: 16.0,
-                              );
-                            },
-                          ),
-                          Chip(
-                            label: const Text('krzysztof.kolumb@test.com'),
-                            labelStyle: const TextStyle(fontSize: 12),
-                            onDeleted: () {
-                              Fluttertoast.showToast(
-                                msg: 'Usunięto użytkownika z listy',
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.BOTTOM,
-                                timeInSecForIosWeb: 1,
-                                fontSize: 16.0,
-                              );
-                            },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: TextField(
-                              controller: _addUserController,
-                              textAlign: TextAlign.left,
-                              decoration: const InputDecoration(
-                                labelText: 'Email nowego użytkownika',
-                                hintText: 'np. test@test.com',
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          child: const Text('Udostępnij'),
-                          onPressed: () {
-                            _addUserController.clear();
-                            Fluttertoast.showToast(
-                              msg: 'Udostępniono listę',
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              fontSize: 16.0,
-                            );
-                          },
-                        ),
-                      ],
-                    )),
+              context: context,
+              builder: (context) => UserManagementDialog(addUserController: _addUserController),
+            ),
             icon: const Icon(Icons.manage_accounts),
           ),
         ],
