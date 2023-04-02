@@ -36,3 +36,19 @@ addListElement(ListElement newElement, String id) {
 deleteListElement(String listId, String elementId) {
   _database.doc('/shopping_lists/$listId/products/$elementId').delete();
 }
+
+updateSumPrice(String listId) async {
+  final listRef = _database.doc('shopping_lists/$listId');
+  final productsRef = listRef.collection('products');
+  final productsSnapshot = await productsRef.get();
+  double sum = 0;
+
+  for (var element in productsSnapshot.docs) {
+    final price = element.data()['price'] ?? 0;
+    sum += price;
+  }
+
+  await listRef.update({
+    'sum': sum,
+  });
+}
