@@ -52,7 +52,6 @@ class _DetailsState extends State<Details> {
                         children: [
                           Chip(
                             label: const Text('tomasz.baltonowski@test.com'),
-                            backgroundColor: Colors.green,
                             onDeleted: () {
                               Fluttertoast.showToast(
                                 msg: 'Usunięto użytkownika z listy',
@@ -65,7 +64,6 @@ class _DetailsState extends State<Details> {
                           ),
                           Chip(
                             label: const Text('krzysztof.kolumb@test.com'),
-                            backgroundColor: Colors.blue,
                             onDeleted: () {
                               Fluttertoast.showToast(
                                 msg: 'Usunięto użytkownika z listy',
