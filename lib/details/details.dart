@@ -75,7 +75,7 @@ class _DetailsState extends State<Details> {
                             },
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 30),
+                            padding: const EdgeInsets.only(top: 10),
                             child: TextField(
                               controller: _addUserController,
                               textAlign: TextAlign.left,
