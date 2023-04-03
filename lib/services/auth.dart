@@ -28,8 +28,8 @@ Future<bool> signUp(String email, String password, String repeatedPassword) asyn
   }
   try {
     final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-    await addUserDocument(userCredential.user!.uid, email);
-    return true;
+    final bool isAddedCorrectly = await addUserDocument(userCredential.user!.uid, email);
+    return isAddedCorrectly;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       Fluttertoast.showToast(msg: 'The password provided is too weak.');
