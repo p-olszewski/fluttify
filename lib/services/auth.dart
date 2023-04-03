@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fluttify/services/firestore.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -26,7 +27,8 @@ Future<bool> signUp(String email, String password, String repeatedPassword) asyn
     return false;
   }
   try {
-    await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    await addUserDocument(userCredential.user!.uid, email);
     return true;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {

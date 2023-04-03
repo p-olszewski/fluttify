@@ -89,3 +89,9 @@ deleteUserFromShoppingList(String listId, String userEmail) async {
     'users': FieldValue.arrayRemove([userId]),
   });
 }
+
+addUserDocument(String uid, String email) async {
+  await _database.collection('users').doc(uid).set({
+    'email': email,
+  });
+}
