@@ -89,3 +89,17 @@ deleteUserFromShoppingList(String listId, String userEmail) async {
     'users': FieldValue.arrayRemove([userId]),
   });
 }
+
+Future<bool> addUserDocument(String uid, String email) async {
+  if (uid.isEmpty || email.isEmpty) {
+    return false;
+  }
+  try {
+    await _database.doc('users/$uid').set({
+      'email': email,
+    });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
