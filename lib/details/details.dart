@@ -55,11 +55,7 @@ class _DetailsState extends State<Details> {
         height: screenHeight,
         child: Column(
           children: [
-            InputRow(
-              nameController: _nameController,
-              priceController: _priceController,
-              widget: widget,
-            ),
+            InputRow(listId: widget.listId),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: snapshot,

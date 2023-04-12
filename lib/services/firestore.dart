@@ -103,3 +103,14 @@ Future<bool> addUserDocument(String uid, String email) async {
     return false;
   }
 }
+
+Future<List<MapEntry<String, double>>> findElement(String text) async {
+  final productsSnapshot = await _database
+      .collection('products')
+      .where('name', isGreaterThanOrEqualTo: text)
+      .where('name', isLessThanOrEqualTo: '$text\uf8ff')
+      .limit(3)
+      .get();
+
+  return productsSnapshot.docs.map<MapEntry<String, double>>((doc) => MapEntry(doc.data()['name'], doc.data()['price'])).toList();
+}
