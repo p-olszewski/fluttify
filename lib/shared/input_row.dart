@@ -36,6 +36,7 @@ class _InputRowState extends State<InputRow> {
             Flexible(
               flex: 3,
               child: Autocomplete<MapEntry<String, double>>(
+                displayStringForOption: (option) => option.key,
                 optionsBuilder: (TextEditingValue textEditingValue) {
                   if (textEditingValue.text.length < 2) {
                     return const Iterable<MapEntry<String, double>>.empty();
