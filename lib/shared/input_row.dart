@@ -35,13 +35,59 @@ class _InputRowState extends State<InputRow> {
           children: [
             Flexible(
               flex: 3,
-              child: TextField(
-                controller: widget._nameController,
-                decoration: InputDecoration(
-                  labelText: 'Nazwa produktu *',
-                  border: const UnderlineInputBorder(),
-                  errorText: _nameErrorText,
-                ),
+              child: Autocomplete<MapEntry<String, double>>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text.length < 2) {
+                    return const Iterable<MapEntry<String, double>>.empty();
+                  }
+                  return findElement(textEditingValue.text.toUpperCase());
+                },
+                onSelected: (MapEntry<String, double> selection) {
+                  widget._nameController.text = selection.key.toString();
+                  widget._priceController.text = selection.value.toStringAsFixed(2);
+                },
+                fieldViewBuilder: (BuildContext context, TextEditingController textEditingController, FocusNode focusNode,
+                    VoidCallback onFieldSubmitted) {
+                  return TextField(
+                    controller: textEditingController,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Nazwa produktu *',
+                      border: const UnderlineInputBorder(),
+                      errorText: _nameErrorText,
+                    ),
+                    onSubmitted: (String value) {
+                      onFieldSubmitted();
+                    },
+                  );
+                },
+                optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<MapEntry<String, double>> onSelected,
+                    Iterable<MapEntry<String, double>> options) {
+                  return Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 6.0,
+                      child: SizedBox(
+                        height: 200.0,
+                        child: ListView(
+                          padding: const EdgeInsets.all(8.0),
+                          children: options.map((MapEntry<String, double> option) {
+                            return GestureDetector(
+                              onTap: () {
+                                onSelected(option);
+                              },
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.only(left: 4.0, right: 30),
+                                title: Text(option.key),
+                                trailing: Text('${option.value.toStringAsFixed(2)} zł'),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
             const SizedBox(width: 10),
