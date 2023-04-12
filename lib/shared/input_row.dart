@@ -53,33 +53,37 @@ class _InputRowState extends State<InputRow> {
               child: priceInput(),
             ),
             const SizedBox(width: 10),
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: ElevatedButton(
-                onPressed: () {
-                  if (_nameController.text.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Nazwa produktu nie może być pusta!'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                    setState(() => _nameErrorText = 'Pole wymagane');
-                  } else {
-                    final name = _nameController.text;
-                    final price = _priceController.text.isEmpty ? 0.00 : double.tryParse(_priceController.text);
-                    addListElement(ListElement(name: name, price: price!), widget.listId);
-                    _nameController.clear();
-                    _priceController.clear();
-                    SystemChannels.textInput.invokeMethod('TextInput.hide');
-                    setState(() => _nameErrorText = null);
-                  }
-                },
-                child: const Text("Dodaj"),
-              ),
-            ),
+            addButton(context),
           ],
         ),
+      ),
+    );
+  }
+
+  Padding addButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 5),
+      child: ElevatedButton(
+        onPressed: () {
+          if (_nameController.text.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Nazwa produktu nie może być pusta!'),
+                duration: Duration(seconds: 2),
+              ),
+            );
+            setState(() => _nameErrorText = 'Pole wymagane');
+          } else {
+            final name = _nameController.text;
+            final price = _priceController.text.isEmpty ? 0.00 : double.tryParse(_priceController.text);
+            addListElement(ListElement(name: name, price: price!), widget.listId);
+            _nameController.clear();
+            _priceController.clear();
+            SystemChannels.textInput.invokeMethod('TextInput.hide');
+            setState(() => _nameErrorText = null);
+          }
+        },
+        child: const Text("Dodaj"),
       ),
     );
   }
