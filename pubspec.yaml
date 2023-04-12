@@ -41,10 +41,20 @@ dependencies:
   cloud_firestore: ^4.4.4
   fluttertoast: ^8.2.1
   animations: ^2.0.7
+  flutter_launcher_icons: ^0.13.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/ic_launcher.png"
+  adaptive_icon_foreground: "assets/ic_launcher_foreground.png"
+  adaptive_icon_background: "assets/ic_launcher_background.png"
+  web:
+    generate: true
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
