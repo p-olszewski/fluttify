@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttify/services/firestore.dart';
 
+import '../models/list_element.dart';
+
 class ListElementCard extends StatefulWidget {
   const ListElementCard({super.key, required this.doc, required this.listId});
 
@@ -16,6 +18,8 @@ class ListElementCard extends StatefulWidget {
 class _ListElementCardState extends State<ListElementCard> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
+  String? _nameErrorText;
+  String? _priceErrorText;
 
   @override
   void initState() {
@@ -82,15 +86,16 @@ class _ListElementCardState extends State<ListElementCard> {
                     decoration: InputDecoration(
                       labelText: 'Nazwa produktu',
                       hintText: 'np. Chleb',
+                      errorText: _nameErrorText,
                     ),
                   ),
                   TextFormField(
                     controller: priceController,
                     textAlign: TextAlign.left,
                     decoration: InputDecoration(
-                      labelText: 'Cena produktu',
-                      hintText: "zł",
-                    ),
+                        labelText: 'Cena produktu',
+                        hintText: "zł",
+                        errorText: _priceErrorText),
                     keyboardType:
                         const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
@@ -105,7 +110,40 @@ class _ListElementCardState extends State<ListElementCard> {
                     child: const Text('Anuluj'),
                   ),
                   ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () async {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                      if (nameController.text.isEmpty) {
+                        setState(() => _nameErrorText = 'Pole wymagane');
+                        return;
+                      }
+                      if (priceController.text.isEmpty) {
+                        setState(() => _priceErrorText = 'Pole wymagane');
+                        return;
+                      }
+                      try {
+                        final name = nameController.text;
+                        final price = priceController.text.isEmpty
+                            ? 0.00
+                            : double.tryParse(priceController.text);
+                        await updateListElement(
+                            ListElement(name: name, price: price!),
+                            widget.listId,
+                            widget.doc.id);
+                        if (!mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Zaktualizowano produkt!'),
+                            duration: const Duration(seconds: 1),
+                          ),
+                        );
+                        setState(() => _nameErrorText = null);
+                        setState(() => _priceErrorText = null);
+                      } catch (e) {
+                        // error handling
+                      }
+                      // await updateListElement();
+                      Navigator.of(context).pop();
+                    },
                     child: const Text('Zapisz'),
                   ),
                 ],
