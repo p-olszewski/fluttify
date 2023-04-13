@@ -55,6 +55,32 @@ class ListElementCard extends StatelessWidget {
               context: context,
               builder: (context) => AlertDialog(
                 title: const Text('Edytuj produkt'),
+                content: Column(mainAxisSize: MainAxisSize.min, children: [
+                  TextFormField(
+                    // controller: nameController,
+                    initialValue: doc['name'],
+                    textAlign: TextAlign.left,
+                    decoration: InputDecoration(
+                      labelText: 'Nazwa produktu',
+                      hintText: 'np. Chleb',
+                    ),
+                  ),
+                  TextFormField(
+                    // controller: priceController,
+                    initialValue: doc['price'].toString(),
+                    textAlign: TextAlign.left,
+                    decoration: InputDecoration(
+                      labelText: 'Cena produktu',
+                      hintText: "zł",
+                    ),
+                    keyboardType:
+                        const TextInputType.numberWithOptions(decimal: true),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^\d+\.?\d{0,2}')),
+                    ],
+                  ),
+                ]),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
