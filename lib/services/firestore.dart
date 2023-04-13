@@ -39,6 +39,13 @@ deleteListElement(String listId, String elementId) {
   updateSumPrice(listId);
 }
 
+updateListElement(ListElement updatedElement, String listId, String elementId) {
+  _database
+      .doc('/shopping_lists/$listId/products/$elementId')
+      .update(updatedElement.toJson());
+  updateSumPrice(listId);
+}
+
 updateSumPrice(String listId) async {
   final listRef = _database.doc('shopping_lists/$listId');
   final productsSnapshot = await listRef.collection('products').get();
