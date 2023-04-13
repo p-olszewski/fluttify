@@ -3,23 +3,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttify/services/firestore.dart';
 
-class ListElementCard extends StatelessWidget {
+class ListElementCard extends StatefulWidget {
   const ListElementCard({super.key, required this.doc, required this.listId});
 
   final QueryDocumentSnapshot<Object?> doc;
   final String listId;
-  // final TextEditingController nameController;
-  // final TextEditingController priceController;
+
+  @override
+  State<ListElementCard> createState() => _ListElementCardState();
+}
+
+class _ListElementCardState extends State<ListElementCard> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.doc['name'];
+    priceController.text = widget.doc['price'].toString();
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    priceController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey(doc.id),
+      key: ValueKey(widget.doc.id),
       onDismissed: (direction) {
-        deleteListElement(listId, doc.id);
+        deleteListElement(widget.listId, widget.doc.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${doc['name']} usunięto z listy!'),
+            content: Text('${widget.doc['name']} usunięto z listy!'),
             duration: const Duration(seconds: 1),
           ),
         );
@@ -39,14 +59,14 @@ class ListElementCard extends StatelessWidget {
           title: Row(
             children: [
               Checkbox(
-                value: doc['bought'],
+                value: widget.doc['bought'],
                 onChanged: (bool? value) {},
               ),
               Expanded(
-                child: Text(doc['name']),
+                child: Text(widget.doc['name']),
               ),
               Text(
-                '${doc['price'].toStringAsFixed(2)} zł',
+                '${widget.doc['price'].toStringAsFixed(2)} zł',
               ),
             ],
           ),
@@ -57,8 +77,7 @@ class ListElementCard extends StatelessWidget {
                 title: const Text('Edytuj produkt'),
                 content: Column(mainAxisSize: MainAxisSize.min, children: [
                   TextFormField(
-                    // controller: nameController,
-                    initialValue: doc['name'],
+                    controller: nameController,
                     textAlign: TextAlign.left,
                     decoration: InputDecoration(
                       labelText: 'Nazwa produktu',
@@ -66,8 +85,7 @@ class ListElementCard extends StatelessWidget {
                     ),
                   ),
                   TextFormField(
-                    // controller: priceController,
-                    initialValue: doc['price'].toString(),
+                    controller: priceController,
                     textAlign: TextAlign.left,
                     decoration: InputDecoration(
                       labelText: 'Cena produktu',
