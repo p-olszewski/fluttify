@@ -140,7 +140,6 @@ class _ListElementCardState extends State<ListElementCard> {
                       } catch (e) {
                         // error handling
                       }
-                      // await updateListElement();
                       Navigator.of(context).pop();
                     },
                     child: const Text('Zapisz'),
