@@ -55,6 +55,7 @@ class ListElementCard extends StatelessWidget {
               context: context,
               builder: (context) => AlertDialog(
                 title: const Text('Edytuj produkt'),
+                actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text('Anuluj'),
