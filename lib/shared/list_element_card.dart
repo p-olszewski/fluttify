@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttify/services/firestore.dart';
 import 'package:fluttify/models/list_element.dart';
+import 'package:fluttify/services/firestore.dart';
 
 class ListElementCard extends StatefulWidget {
   const ListElementCard({super.key, required this.doc, required this.listId});
@@ -73,7 +73,7 @@ class _ListElementCardState extends State<ListElementCard> {
               ),
             ],
           ),
-          onLongPress: () {
+          onTap: () {
             showDialog(
               context: context,
               builder: (context) => AlertDialog(
@@ -125,7 +125,11 @@ class _ListElementCardState extends State<ListElementCard> {
                             ? 0.00
                             : double.tryParse(priceController.text);
                         await updateListElement(
-                            ListElement(name: name, price: price!),
+                            ListElement(
+                              name: name,
+                              price: price!,
+                              order: widget.doc['order'],
+                            ),
                             widget.listId,
                             widget.doc.id);
                         if (!mounted) return;

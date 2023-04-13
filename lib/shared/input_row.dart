@@ -75,8 +75,12 @@ class _InputRowState extends State<InputRow> {
             setState(() => _nameErrorText = 'Pole wymagane');
           } else {
             final name = _nameController.text;
-            final price = _priceController.text.isEmpty ? 0.00 : double.tryParse(_priceController.text);
-            addListElement(ListElement(name: name, price: price!), widget.listId);
+            final price = _priceController.text.isEmpty
+                ? 0.00
+                : double.tryParse(_priceController.text);
+            getMaxOrder(widget.listId).then((order) => addListElement(
+                ListElement(name: name, price: price!, order: order),
+                widget.listId));
             _nameController.clear();
             _priceController.clear();
             SystemChannels.textInput.invokeMethod('TextInput.hide');
@@ -116,8 +120,10 @@ class _InputRowState extends State<InputRow> {
         _nameController.text = selection.key.toString();
         _priceController.text = selection.value.toStringAsFixed(2);
       },
-      fieldViewBuilder:
-          (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
+      fieldViewBuilder: (BuildContext context,
+          TextEditingController textEditingController,
+          FocusNode focusNode,
+          VoidCallback onFieldSubmitted) {
         _nameController = textEditingController;
         return TextField(
           controller: textEditingController,
@@ -132,8 +138,9 @@ class _InputRowState extends State<InputRow> {
           },
         );
       },
-      optionsViewBuilder:
-          (BuildContext context, AutocompleteOnSelected<MapEntry<String, double>> onSelected, Iterable<MapEntry<String, double>> options) {
+      optionsViewBuilder: (BuildContext context,
+          AutocompleteOnSelected<MapEntry<String, double>> onSelected,
+          Iterable<MapEntry<String, double>> options) {
         return Align(
           alignment: Alignment.topLeft,
           child: Material(
@@ -148,7 +155,8 @@ class _InputRowState extends State<InputRow> {
                       onSelected(option);
                     },
                     child: ListTile(
-                      contentPadding: const EdgeInsets.only(left: 4.0, right: 30),
+                      contentPadding:
+                          const EdgeInsets.only(left: 4.0, right: 30),
                       title: Text(option.key),
                       trailing: Text('${option.value.toStringAsFixed(2)} zł'),
                     ),
