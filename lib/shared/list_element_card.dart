@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttify/services/firestore.dart';
 
 class ListElementCard extends StatelessWidget {
@@ -7,6 +8,8 @@ class ListElementCard extends StatelessWidget {
 
   final QueryDocumentSnapshot<Object?> doc;
   final String listId;
+  // final TextEditingController nameController;
+  // final TextEditingController priceController;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +50,23 @@ class ListElementCard extends StatelessWidget {
               ),
             ],
           ),
+          onLongPress: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Edytuj produkt'),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Anuluj'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Zapisz'),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
