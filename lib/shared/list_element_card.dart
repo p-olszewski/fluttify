@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttify/services/firestore.dart';
-
-import '../models/list_element.dart';
+import 'package:fluttify/models/list_element.dart';
 
 class ListElementCard extends StatefulWidget {
   const ListElementCard({super.key, required this.doc, required this.listId});
