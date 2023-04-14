@@ -85,13 +85,13 @@ class _HomeState extends State<Home> {
                               builder: (context) => AlertDialog(
                                 title: const Text('Czy chcesz usunąć listę?'),
                                 actions: [
-                                  TextButton(
+                                  ElevatedButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text('Nie'),
                                   ),
-                                  TextButton(
+                                  ElevatedButton(
                                     onPressed: () {
                                       deleteShoppingList(doc.reference.id);
                                       Navigator.of(context).pop();
