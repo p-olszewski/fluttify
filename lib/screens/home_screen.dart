@@ -1,18 +1,21 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/models/shopping_list.dart';
+import 'package:fluttify/providers/shopping_list_provider.dart';
 import 'package:fluttify/services/auth.dart';
 import 'package:fluttify/services/firestore.dart';
+import 'package:provider/provider.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeScreenState extends State<HomeScreen> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
   final TextEditingController _newListController = TextEditingController();
 
@@ -32,10 +35,17 @@ class _HomeState extends State<Home> {
         title: const Text('Shopping lists'),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.account_circle, size: 35),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            iconSize: 25,
+            onPressed: () async {
+              bool shouldRedirect = await signOut();
+              if (shouldRedirect) {
+                Navigator.pushReplacementNamed(context, '/');
+                Fluttertoast.showToast(msg: 'Wylogowano pomyślnie');
+              }
+            },
           )
         ],
       ),
@@ -69,14 +79,10 @@ class _HomeState extends State<Home> {
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
-                            Navigator.pushNamed(
-                              context,
-                              '/details',
-                              arguments: {
-                                'id': doc.reference.id,
-                                'title': doc['title'],
-                              },
-                            );
+                            context.read<ShoppingListProvider>().setListId(doc.reference.id);
+                            context.read<ShoppingListProvider>().setListTitle(doc['title']);
+                            context.read<ShoppingListProvider>().updateTotalPrice(doc.reference.id);
+                            Navigator.pushNamed(context, '/details');
                           },
                           onLongPress: () {
                             showDialog(
@@ -86,16 +92,16 @@ class _HomeState extends State<Home> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Nie'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
                                       deleteShoppingList(doc.reference.id);
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text('Tak'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Nie'),
                                   )
                                 ],
                               ),

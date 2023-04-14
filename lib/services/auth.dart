@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fluttify/services/firestore.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -26,8 +27,9 @@ Future<bool> signUp(String email, String password, String repeatedPassword) asyn
     return false;
   }
   try {
-    await _auth.createUserWithEmailAndPassword(email: email, password: password);
-    return true;
+    final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    final bool isAddedCorrectly = await addUserDocument(userCredential.user!.uid, email);
+    return isAddedCorrectly;
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       Fluttertoast.showToast(msg: 'The password provided is too weak.');
