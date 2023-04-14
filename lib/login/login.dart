@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/auth.dart';
 import 'package:fluttify/shared/shared.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -15,8 +18,23 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   final TextEditingController _emailFieldController = TextEditingController();
   final TextEditingController _passwordFieldController = TextEditingController();
   final TextEditingController _repeatedPasswordFieldController = TextEditingController();
+  bool _isConnected = false;
+  late StreamSubscription<InternetConnectionStatus> _listener;
   bool _isLoginPage = true;
   int _key = 1;
+
+  @override
+  initState() {
+    super.initState();
+    InternetConnectionChecker()
+        .hasConnection
+        .then((value) => _isConnected = value);
+    _listener = InternetConnectionChecker().onStatusChange.listen(
+          (InternetConnectionStatus status) => setState(() {
+            _isConnected = status == InternetConnectionStatus.connected;
+          }),
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +69,11 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                       child: CircleAvatar(
                         radius: 60,
                         backgroundColor: Colors.white,
-                        child: Icon(Icons.shopping_cart, size: 75, color: Theme.of(context).colorScheme.primary),
+                        child: Icon(Icons.shopping_cart,
+                            size: 75,
+                            color: _isConnected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.secondary),
                       ),
                     ),
                     SizedBox(height: screenHeight / 50),
@@ -72,22 +94,30 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                     ),
                     SizedBox(height: screenHeight / 15),
                     ElevatedButton(
-                      onPressed: () async {
-                        bool shouldRedirect = _isLoginPage
-                            ? await signIn(_emailFieldController.text, _passwordFieldController.text)
-                            : await signUp(
-                                _emailFieldController.text,
-                                _passwordFieldController.text,
-                                _repeatedPasswordFieldController.text,
-                              );
-                        if (shouldRedirect) {
-                          Fluttertoast.showToast(
-                            msg: _isLoginPage ? "Logged in" : "Account created",
-                          );
-                          if (!mounted) return;
-                          Navigator.pushReplacementNamed(context, '/home');
-                        }
-                      },
+                      onPressed: _isConnected
+                          ? () async {
+                              bool shouldRedirect = _isLoginPage
+                                  ? await signIn(_emailFieldController.text,
+                                      _passwordFieldController.text)
+                                  : await signUp(
+                                      _emailFieldController.text,
+                                      _passwordFieldController.text,
+                                      _repeatedPasswordFieldController.text,
+                                    );
+                              if (shouldRedirect) {
+                                _listener.cancel();
+                                Fluttertoast.showToast(
+                                  msg: _isLoginPage
+                                      ? "Logged in"
+                                      : "Account created",
+                                );
+                                if (!mounted) return;
+                                Navigator.pushReplacementNamed(
+                                    context, '/home');
+                              }
+                            }
+                          : () => Fluttertoast.showToast(
+                              msg: 'No internet connection'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                       ),
