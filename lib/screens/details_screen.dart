@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:fluttify/models/list_element.dart';
 import 'package:fluttify/providers/shopping_list_provider.dart';
 import 'package:fluttify/services/firestore.dart';
-import 'package:fluttify/shared/custom_appbar.dart';
-import 'package:fluttify/shared/shared.dart';
+import 'package:fluttify/widgets/custom_appbar.dart';
+import 'package:fluttify/widgets/input_row.dart';
+import 'package:fluttify/widgets/list_element_card.dart';
 import 'package:provider/provider.dart';
 
-class Details extends StatefulWidget {
-  const Details({super.key});
+class DetailsScreen extends StatefulWidget {
+  const DetailsScreen({super.key});
 
   @override
-  State<Details> createState() => _DetailsState();
+  State<DetailsScreen> createState() => _DetailsScreenState();
 }
 
-class _DetailsState extends State<Details> {
+class _DetailsScreenState extends State<DetailsScreen> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
   late TextEditingController _nameController;
   late TextEditingController _priceController;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttify/providers/shopping_list_provider.dart';
-import 'package:fluttify/shared/user_management_dialog.dart';
+import 'package:fluttify/widgets/user_management_dialog.dart';
 import 'package:provider/provider.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSize {
