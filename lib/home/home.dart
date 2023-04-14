@@ -87,16 +87,16 @@ class _HomeState extends State<Home> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Nie'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
                                       deleteShoppingList(doc.reference.id);
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text('Tak'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Nie'),
                                   )
                                 ],
                               ),
