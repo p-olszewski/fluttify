@@ -133,6 +133,7 @@ class _ListElementCardState extends State<ListElementCard> {
                         return;
                       }
                       try {
+                        context.read<ShoppingListProvider>().updateTotalPrice(listId);
                         final name = nameController.text;
                         final price = priceController.text.isEmpty ? 0.00 : double.tryParse(priceController.text);
                         await updateListElement(
@@ -150,7 +151,6 @@ class _ListElementCardState extends State<ListElementCard> {
                             duration: const Duration(seconds: 1),
                           ),
                         );
-                        context.read<ShoppingListProvider>().updateTotalPrice(listId);
                         setState(() => _nameErrorText = null);
                         setState(() => _priceErrorText = null);
                       } catch (e) {
