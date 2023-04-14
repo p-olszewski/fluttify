@@ -1,28 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttify/models/list_element.dart';
+import 'package:fluttify/providers/shopping_list_provider.dart';
 import 'package:fluttify/services/firestore.dart';
-import 'package:fluttify/shared/shared.dart';
-import 'package:fluttify/shared/user_management_dialog.dart';
+import 'package:fluttify/widgets/custom_appbar.dart';
+import 'package:fluttify/widgets/input_row.dart';
+import 'package:fluttify/widgets/list_element_card.dart';
+import 'package:provider/provider.dart';
 
-class Details extends StatefulWidget {
-  final String listId;
-  final String listTitle;
-  const Details({super.key, required this.listId, required this.listTitle});
+class DetailsScreen extends StatefulWidget {
+  const DetailsScreen({super.key});
 
   @override
-  State<Details> createState() => _DetailsState();
+  State<DetailsScreen> createState() => _DetailsScreenState();
 }
 
-class _DetailsState extends State<Details> {
+class _DetailsScreenState extends State<DetailsScreen> {
   late Stream<QuerySnapshot<Map<String, dynamic>>> snapshot;
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _priceController;
+  late String listId;
+  late String listTitle;
+  late double totalPrice;
 
   @override
   void initState() {
     super.initState();
-    snapshot = getShoppingListElements(widget.listId);
+    _nameController = TextEditingController();
+    _priceController = TextEditingController();
+    listId = context.read<ShoppingListProvider>().listId;
+    listTitle = context.read<ShoppingListProvider>().listTitle;
+    snapshot = getShoppingListElements(listId);
   }
 
   @override
@@ -36,27 +44,16 @@ class _DetailsState extends State<Details> {
   Widget build(BuildContext context) {
     var screenWidth = MediaQuery.of(context).size.width;
     var screenHeight = MediaQuery.of(context).size.height;
+    totalPrice = context.watch<ShoppingListProvider>().totalPrice;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.listTitle),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => UserManagementDialog(listId: widget.listId),
-            ),
-            icon: const Icon(Icons.manage_accounts),
-          ),
-        ],
-      ),
+      appBar: const CustomAppBar(),
       body: SizedBox(
         width: screenWidth,
         height: screenHeight,
         child: Column(
           children: [
-            InputRow(listId: widget.listId),
+            InputRow(),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: snapshot,
@@ -74,10 +71,7 @@ class _DetailsState extends State<Details> {
                     itemCount: snapshot.data!.docs.length,
                     itemBuilder: (BuildContext context, int index) {
                       var doc = snapshot.data!.docs[index];
-                      return ListElementCard(
-                          key: ValueKey(doc.id),
-                          listId: widget.listId,
-                          doc: doc);
+                      return ListElementCard(key: ValueKey(doc.id), doc: doc);
                     },
                     onReorder: (int oldIndex, int newIndex) {
                       if (oldIndex < newIndex) newIndex--;
@@ -88,26 +82,20 @@ class _DetailsState extends State<Details> {
                         bought: doc['bought'],
                       );
                       if (newIndex == snapshot.data!.docs.length - 1) {
-                        listElement.order =
-                            snapshot.data!.docs[newIndex]['order'] + 1;
+                        listElement.order = snapshot.data!.docs[newIndex]['order'] + 1;
                       } else if (newIndex == 0) {
-                        listElement.order =
-                            snapshot.data!.docs[newIndex]['order'] - 1;
+                        listElement.order = snapshot.data!.docs[newIndex]['order'] - 1;
                       } else if (oldIndex < newIndex) {
                         var lowerOrder = snapshot.data!.docs[newIndex]['order'];
-                        var higherOrder =
-                            snapshot.data!.docs[newIndex + 1]['order'];
-                        listElement.order =
-                            (higherOrder - lowerOrder) / 2 + lowerOrder;
+                        var higherOrder = snapshot.data!.docs[newIndex + 1]['order'];
+                        listElement.order = (higherOrder - lowerOrder) / 2 + lowerOrder;
                       } else if (newIndex < oldIndex) {
-                        var lowerOrder =
-                            snapshot.data!.docs[newIndex - 1]['order'];
-                        var higherOrder =
-                            snapshot.data!.docs[newIndex]['order'];
-                        listElement.order =
-                            (higherOrder - lowerOrder) / 2 + lowerOrder;
+                        var lowerOrder = snapshot.data!.docs[newIndex - 1]['order'];
+                        var higherOrder = snapshot.data!.docs[newIndex]['order'];
+                        listElement.order = (higherOrder - lowerOrder) / 2 + lowerOrder;
                       }
-                      updateListElement(listElement, widget.listId, doc.id);
+                      updateListElement(listElement, listId, doc.id);
+                      context.read<ShoppingListProvider>().updateTotalPrice(listId);
                     },
                   );
                 },

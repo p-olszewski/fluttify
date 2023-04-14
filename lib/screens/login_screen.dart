@@ -1,20 +1,21 @@
+
 import 'dart:async';
 
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/services/auth.dart';
-import 'package:fluttify/shared/shared.dart';
+import 'package:fluttify/widgets/login_textformfield.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStateMixin {
   final TextEditingController _emailFieldController = TextEditingController();
   final TextEditingController _passwordFieldController = TextEditingController();
   final TextEditingController _repeatedPasswordFieldController = TextEditingController();
@@ -26,9 +27,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
   @override
   initState() {
     super.initState();
-    InternetConnectionChecker()
-        .hasConnection
-        .then((value) => _isConnected = value);
+    InternetConnectionChecker().hasConnection.then((value) => _isConnected = value);
     _listener = InternetConnectionChecker().onStatusChange.listen(
           (InternetConnectionStatus status) => setState(() {
             _isConnected = status == InternetConnectionStatus.connected;
@@ -71,9 +70,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                         backgroundColor: Colors.white,
                         child: Icon(Icons.shopping_cart,
                             size: 75,
-                            color: _isConnected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.secondary),
+                            color: _isConnected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.secondary),
                       ),
                     ),
                     SizedBox(height: screenHeight / 50),
@@ -97,8 +94,7 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                       onPressed: _isConnected
                           ? () async {
                               bool shouldRedirect = _isLoginPage
-                                  ? await signIn(_emailFieldController.text,
-                                      _passwordFieldController.text)
+                                  ? await signIn(_emailFieldController.text, _passwordFieldController.text)
                                   : await signUp(
                                       _emailFieldController.text,
                                       _passwordFieldController.text,
@@ -107,17 +103,13 @@ class _LoginState extends State<Login> with SingleTickerProviderStateMixin {
                               if (shouldRedirect) {
                                 _listener.cancel();
                                 Fluttertoast.showToast(
-                                  msg: _isLoginPage
-                                      ? "Logged in"
-                                      : "Account created",
+                                  msg: _isLoginPage ? "Logged in" : "Account created",
                                 );
                                 if (!mounted) return;
-                                Navigator.pushReplacementNamed(
-                                    context, '/home');
+                                Navigator.pushReplacementNamed(context, '/home');
                               }
                             }
-                          : () => Fluttertoast.showToast(
-                              msg: 'No internet connection'),
+                          : () => Fluttertoast.showToast(msg: 'No internet connection'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                       ),

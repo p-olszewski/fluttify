@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:fluttify/providers/shopping_list_provider.dart';
 import 'package:fluttify/services/firestore.dart';
+import 'package:provider/provider.dart';
 
 class UserManagementDialog extends StatefulWidget {
-  const UserManagementDialog({
-    super.key,
-    required this.listId,
-  });
-
-  final String listId;
+  const UserManagementDialog({super.key});
 
   @override
   State<UserManagementDialog> createState() => _UserManagementDialogState();
@@ -17,12 +14,14 @@ class UserManagementDialog extends StatefulWidget {
 class _UserManagementDialogState extends State<UserManagementDialog> {
   final TextEditingController _emailController = TextEditingController();
   late Future<dynamic> userEmails;
+  late String listId;
   String? _nameErrorText;
 
   @override
   void initState() {
     super.initState();
-    userEmails = getShoppingListUserEmails(widget.listId);
+    listId = context.read<ShoppingListProvider>().listId;
+    userEmails = getShoppingListUserEmails(listId);
   }
 
   @override
@@ -60,8 +59,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
             return;
           }
           try {
-            await addUserToShoppingList(widget.listId, _emailController.text);
-            if (!mounted) return;
+            await addUserToShoppingList(listId, _emailController.text);
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -121,7 +119,8 @@ class ChipsList extends StatelessWidget {
                 label: Text(snapshot.data![index]),
                 labelStyle: const TextStyle(fontSize: 12),
                 onDeleted: () {
-                  deleteUserFromShoppingList(widget.listId, snapshot.data![index]);
+                  String listId = context.read<ShoppingListProvider>().listId;
+                  deleteUserFromShoppingList(listId, snapshot.data![index]);
                   Navigator.of(context).pop();
                   Fluttertoast.showToast(msg: 'Usunięto ${snapshot.data![index]} z listy.');
                 },

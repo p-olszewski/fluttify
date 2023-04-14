@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttify/models/list_element.dart';
+import 'package:fluttify/providers/shopping_list_provider.dart';
 import 'package:fluttify/services/firestore.dart';
+import 'package:provider/provider.dart';
 
 class InputRow extends StatefulWidget {
-  const InputRow({
-    super.key,
-    required this.listId,
-  });
-
-  final String listId;
+  const InputRow({super.key});
 
   @override
   State<InputRow> createState() => _InputRowState();
@@ -19,12 +16,14 @@ class _InputRowState extends State<InputRow> {
   String? _nameErrorText;
   late TextEditingController _nameController;
   late TextEditingController _priceController;
+  late String listId;
 
   @override
   void initState() {
     super.initState();
     _priceController = TextEditingController();
     _nameController = TextEditingController();
+    listId = context.read<ShoppingListProvider>().listId;
   }
 
   @override
@@ -64,7 +63,7 @@ class _InputRowState extends State<InputRow> {
     return Padding(
       padding: const EdgeInsets.only(top: 5),
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
           if (_nameController.text.isEmpty) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -75,15 +74,14 @@ class _InputRowState extends State<InputRow> {
             setState(() => _nameErrorText = 'Pole wymagane');
           } else {
             final name = _nameController.text;
-            final price = _priceController.text.isEmpty
-                ? 0.00
-                : double.tryParse(_priceController.text);
-            getMaxOrder(widget.listId).then((order) => addListElement(
-                ListElement(name: name, price: price!, order: order),
-                widget.listId));
+            final price = _priceController.text.isEmpty ? 0.00 : double.tryParse(_priceController.text);
+            final order = await getMaxOrder(listId);
+            await addListElement(ListElement(name: name, price: price!, order: order), listId);
             _nameController.clear();
             _priceController.clear();
             SystemChannels.textInput.invokeMethod('TextInput.hide');
+            if (!mounted) return;
+            context.read<ShoppingListProvider>().updateTotalPrice(listId);
             setState(() => _nameErrorText = null);
           }
         },
@@ -120,10 +118,8 @@ class _InputRowState extends State<InputRow> {
         _nameController.text = selection.key.toString();
         _priceController.text = selection.value.toStringAsFixed(2);
       },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController textEditingController,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted) {
+      fieldViewBuilder:
+          (BuildContext context, TextEditingController textEditingController, FocusNode focusNode, VoidCallback onFieldSubmitted) {
         _nameController = textEditingController;
         return TextField(
           controller: textEditingController,
@@ -138,9 +134,8 @@ class _InputRowState extends State<InputRow> {
           },
         );
       },
-      optionsViewBuilder: (BuildContext context,
-          AutocompleteOnSelected<MapEntry<String, double>> onSelected,
-          Iterable<MapEntry<String, double>> options) {
+      optionsViewBuilder:
+          (BuildContext context, AutocompleteOnSelected<MapEntry<String, double>> onSelected, Iterable<MapEntry<String, double>> options) {
         return Align(
           alignment: Alignment.topLeft,
           child: Material(
@@ -155,8 +150,7 @@ class _InputRowState extends State<InputRow> {
                       onSelected(option);
                     },
                     child: ListTile(
-                      contentPadding:
-                          const EdgeInsets.only(left: 4.0, right: 30),
+                      contentPadding: const EdgeInsets.only(left: 4.0, right: 30),
                       title: Text(option.key),
                       trailing: Text('${option.value.toStringAsFixed(2)} zł'),
                     ),
