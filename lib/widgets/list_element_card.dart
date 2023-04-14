@@ -64,7 +64,7 @@ class _ListElementCardState extends State<ListElementCard> {
       child: Card(
         child: ListTile(
           trailing: const Icon(Icons.drag_handle),
-          contentPadding: EdgeInsets.only(left: 0, right: 10),
+          contentPadding: const EdgeInsets.only(left: 0, right: 10),
           title: Row(
             children: [
               Checkbox(
@@ -85,7 +85,7 @@ class _ListElementCardState extends State<ListElementCard> {
               Expanded(
                 child: Text(widget.doc['name']),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Text(
                 '${widget.doc['price'].toStringAsFixed(2)} zł',
               ),
@@ -146,9 +146,9 @@ class _ListElementCardState extends State<ListElementCard> {
                             widget.doc.id);
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
+                          const SnackBar(
                             content: Text('Zaktualizowano produkt!'),
-                            duration: const Duration(seconds: 1),
+                            duration: Duration(seconds: 1),
                           ),
                         );
                         setState(() => _nameErrorText = null);
@@ -156,6 +156,7 @@ class _ListElementCardState extends State<ListElementCard> {
                       } catch (e) {
                         // error handling
                       }
+                      if (!mounted) return;
                       Navigator.of(context).pop();
                     },
                     child: const Text('Zapisz'),

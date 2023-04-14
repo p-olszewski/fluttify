@@ -80,6 +80,7 @@ class _InputRowState extends State<InputRow> {
             _nameController.clear();
             _priceController.clear();
             SystemChannels.textInput.invokeMethod('TextInput.hide');
+            if (!mounted) return;
             context.read<ShoppingListProvider>().updateTotalPrice(listId);
             setState(() => _nameErrorText = null);
           }
