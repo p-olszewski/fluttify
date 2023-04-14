@@ -7,7 +7,11 @@ final FirebaseFirestore _database = FirebaseFirestore.instance;
 final String? _uid = FirebaseAuth.instance.currentUser?.uid;
 
 Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingLists() {
-  return _database.collection('shopping_lists').where('users', arrayContains: '$_uid').where('archived', isEqualTo: false).snapshots();
+  return _database
+      .collection('shopping_lists')
+      .where('users', arrayContains: '$_uid')
+      .where('archived', isEqualTo: false)
+      .snapshots();
 }
 
 addShoppingList(ShoppingList newList) {
@@ -15,23 +19,48 @@ addShoppingList(ShoppingList newList) {
 }
 
 deleteShoppingList(String listId) {
-  _database.collection('shopping_lists').doc(listId).collection('products').get().then(
+  _database
+      .collection('shopping_lists')
+      .doc(listId)
+      .collection('products')
+      .get()
+      .then(
     (QuerySnapshot<Map<String, dynamic>> value) {
       for (var element in value.docs) {
-        _database.collection('shopping_lists').doc(listId).collection('products').doc(element.id).delete();
+        _database
+            .collection('shopping_lists')
+            .doc(listId)
+            .collection('products')
+            .doc(element.id)
+            .delete();
       }
       _database.collection('shopping_lists').doc(listId).delete();
     },
   );
 }
 
-Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListElements(String listId) {
-  return _database.collection('shopping_lists/$listId/products').orderBy('timestamp').snapshots();
+Stream<QuerySnapshot<Map<String, dynamic>>> getShoppingListElements(
+    String listId) {
+  return _database
+      .collection('shopping_lists/$listId/products')
+      .orderBy('order')
+      .snapshots();
 }
 
 addListElement(ListElement newElement, String listId) {
-  _database.collection('/shopping_lists/$listId/products').add(newElement.toJson());
+  _database
+      .collection('/shopping_lists/$listId/products')
+      .add(newElement.toJson());
   updateSumPrice(listId);
+}
+
+Future<double> getMaxOrder(String listId) async {
+  var doc = await _database
+      .collection('/shopping_lists/$listId/products')
+      .orderBy('order', descending: true)
+      .limit(1)
+      .get();
+  return doc.docs.isNotEmpty ? doc.docs.first['order'] + 1 : 0;
 }
 
 deleteListElement(String listId, String elementId) {
@@ -62,21 +91,27 @@ updateSumPrice(String listId) async {
 }
 
 Future<dynamic> getShoppingListUserEmails(String listId) async {
-  final shoppingListSnapshot = await _database.doc('shopping_lists/$listId').get();
+  final shoppingListSnapshot =
+      await _database.doc('shopping_lists/$listId').get();
   final userIds = List.from((shoppingListSnapshot.data())?['users']);
   final userEmails = await Future.wait(
-    userIds.map((userId) async => (await _database.doc('users/$userId').get()).data()!['email']),
+    userIds.map((userId) async =>
+        (await _database.doc('users/$userId').get()).data()!['email']),
   );
 
   return userEmails.where((email) => email != null).cast<String>().toList();
 }
 
 addUserToShoppingList(String listId, String userEmail) async {
-  final userSnapshot = await _database.collection('users').where('email', isEqualTo: userEmail).get();
+  final userSnapshot = await _database
+      .collection('users')
+      .where('email', isEqualTo: userEmail)
+      .get();
   if (userSnapshot.docs.isEmpty) {
     throw 'Nie znaleziono użytkownika $userEmail.';
   }
-  final shoppingListSnapshot = await _database.doc('shopping_lists/$listId').get();
+  final shoppingListSnapshot =
+      await _database.doc('shopping_lists/$listId').get();
   final userIds = List.from((shoppingListSnapshot.data())?['users']);
   if (userIds.contains(userSnapshot.docs.first.id)) {
     throw 'Użytkownik jest już dodany do tej listy.';
@@ -87,7 +122,10 @@ addUserToShoppingList(String listId, String userEmail) async {
 }
 
 deleteUserFromShoppingList(String listId, String userEmail) async {
-  final userSnapshot = await _database.collection('users').where('email', isEqualTo: userEmail).get();
+  final userSnapshot = await _database
+      .collection('users')
+      .where('email', isEqualTo: userEmail)
+      .get();
   if (userSnapshot.docs.isEmpty) {
     throw 'Nie znaleziono użytkownika $userEmail.';
   }
@@ -119,5 +157,8 @@ Future<List<MapEntry<String, double>>> findElement(String text) async {
       .limit(3)
       .get();
 
-  return productsSnapshot.docs.map<MapEntry<String, double>>((doc) => MapEntry(doc.data()['name'], doc.data()['price'])).toList();
+  return productsSnapshot.docs
+      .map<MapEntry<String, double>>(
+          (doc) => MapEntry(doc.data()['name'], doc.data()['price']))
+      .toList();
 }
