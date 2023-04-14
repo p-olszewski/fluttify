@@ -34,10 +34,17 @@ class _HomeState extends State<Home> {
         title: const Text('Shopping lists'),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 8.0),
-            child: Icon(Icons.account_circle, size: 35),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            iconSize: 25,
+            onPressed: () async {
+              bool shouldRedirect = await signOut();
+              if (shouldRedirect) {
+                Navigator.pushReplacementNamed(context, '/');
+                Fluttertoast.showToast(msg: 'Wylogowano pomyślnie');
+              }
+            },
           )
         ],
       ),
@@ -67,8 +74,7 @@ class _HomeState extends State<Home> {
                       return Card(
                         child: ListTile(
                           title: Text(doc['title']),
-                          subtitle:
-                              Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
+                          subtitle: Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
@@ -118,8 +124,7 @@ class _HomeState extends State<Home> {
                   content: TextField(
                     controller: _newListController,
                     autofocus: true,
-                    decoration: const InputDecoration(
-                        labelText: 'Nazwa listy', hintText: 'np. Biedronka'),
+                    decoration: const InputDecoration(labelText: 'Nazwa listy', hintText: 'np. Biedronka'),
                   ),
                   actions: [
                     TextButton(
