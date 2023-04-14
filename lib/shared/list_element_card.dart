@@ -59,6 +59,8 @@ class _ListElementCardState extends State<ListElementCard> {
       ),
       child: Card(
         child: ListTile(
+          trailing: const Icon(Icons.drag_handle),
+          contentPadding: EdgeInsets.only(left: 0, right: 10),
           title: Row(
             children: [
               Checkbox(
@@ -68,6 +70,7 @@ class _ListElementCardState extends State<ListElementCard> {
               Expanded(
                 child: Text(widget.doc['name']),
               ),
+              SizedBox(width: 10),
               Text(
                 '${widget.doc['price'].toStringAsFixed(2)} zł',
               ),
@@ -91,15 +94,10 @@ class _ListElementCardState extends State<ListElementCard> {
                   TextFormField(
                     controller: priceController,
                     textAlign: TextAlign.left,
-                    decoration: InputDecoration(
-                        labelText: 'Cena produktu',
-                        hintText: "zł",
-                        errorText: _priceErrorText),
-                    keyboardType:
-                        const TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(labelText: 'Cena produktu', hintText: "zł", errorText: _priceErrorText),
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
                     inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'^\d+\.?\d{0,2}')),
+                      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                     ],
                   ),
                 ]),
@@ -121,9 +119,7 @@ class _ListElementCardState extends State<ListElementCard> {
                       }
                       try {
                         final name = nameController.text;
-                        final price = priceController.text.isEmpty
-                            ? 0.00
-                            : double.tryParse(priceController.text);
+                        final price = priceController.text.isEmpty ? 0.00 : double.tryParse(priceController.text);
                         await updateListElement(
                             ListElement(
                               name: name,
