@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttify/models/list_element.dart';
+import 'package:fluttify/providers/shopping_list_provider.dart';
 import 'package:fluttify/services/firestore.dart';
+import 'package:provider/provider.dart';
 
 class ListElementCard extends StatefulWidget {
-  const ListElementCard({super.key, required this.doc, required this.listId});
+  const ListElementCard({super.key, required this.doc});
 
   final QueryDocumentSnapshot<Object?> doc;
-  final String listId;
 
   @override
   State<ListElementCard> createState() => _ListElementCardState();
@@ -19,12 +20,14 @@ class _ListElementCardState extends State<ListElementCard> {
   final TextEditingController priceController = TextEditingController();
   String? _nameErrorText;
   String? _priceErrorText;
+  late String listId;
 
   @override
   void initState() {
     super.initState();
     nameController.text = widget.doc['name'];
     priceController.text = widget.doc['price'].toString();
+    listId = context.read<ShoppingListProvider>().listId;
   }
 
   @override
@@ -39,7 +42,8 @@ class _ListElementCardState extends State<ListElementCard> {
     return Dismissible(
       key: ValueKey(widget.doc.id),
       onDismissed: (direction) {
-        deleteListElement(widget.listId, widget.doc.id);
+        context.read<ShoppingListProvider>().updateTotalPrice(listId);
+        deleteListElement(listId, widget.doc.id);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${widget.doc['name']} usunięto z listy!'),
@@ -73,7 +77,7 @@ class _ListElementCardState extends State<ListElementCard> {
                       bought: value!,
                       order: widget.doc['order'],
                     ),
-                    widget.listId,
+                    listId,
                     widget.doc.id,
                   );
                 },
@@ -137,7 +141,7 @@ class _ListElementCardState extends State<ListElementCard> {
                               price: price!,
                               order: widget.doc['order'],
                             ),
-                            widget.listId,
+                            listId,
                             widget.doc.id);
                         if (!mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -146,6 +150,7 @@ class _ListElementCardState extends State<ListElementCard> {
                             duration: const Duration(seconds: 1),
                           ),
                         );
+                        context.read<ShoppingListProvider>().updateTotalPrice(listId);
                         setState(() => _nameErrorText = null);
                         setState(() => _priceErrorText = null);
                       } catch (e) {
