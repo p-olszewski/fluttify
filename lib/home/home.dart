@@ -65,7 +65,8 @@ class _HomeState extends State<Home> {
                       return Card(
                         child: ListTile(
                           title: Text(doc['title']),
-                          subtitle: Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
+                          subtitle:
+                              Text('Suma: ${doc['sum'].toStringAsFixed(2)} zł'),
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
@@ -86,16 +87,16 @@ class _HomeState extends State<Home> {
                                 actions: [
                                   TextButton(
                                     onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Nie'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
                                       deleteShoppingList(doc.reference.id);
                                       Navigator.of(context).pop();
                                     },
                                     child: const Text('Tak'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Nie'),
                                   )
                                 ],
                               ),
@@ -119,7 +120,8 @@ class _HomeState extends State<Home> {
                   content: TextField(
                     controller: _newListController,
                     autofocus: true,
-                    decoration: const InputDecoration(labelText: 'Nazwa listy', hintText: 'np. Biedronka'),
+                    decoration: const InputDecoration(
+                        labelText: 'Nazwa listy', hintText: 'np. Biedronka'),
                   ),
                   actions: [
                     TextButton(
