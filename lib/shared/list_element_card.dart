@@ -65,7 +65,18 @@ class _ListElementCardState extends State<ListElementCard> {
             children: [
               Checkbox(
                 value: widget.doc['bought'],
-                onChanged: (bool? value) {},
+                onChanged: (bool? value) {
+                  updateListElement(
+                    ListElement(
+                      name: widget.doc['name'],
+                      price: widget.doc['price'],
+                      bought: value!,
+                      order: widget.doc['order'],
+                    ),
+                    widget.listId,
+                    widget.doc.id,
+                  );
+                },
               ),
               Expanded(
                 child: Text(widget.doc['name']),
