@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:fluttify/models/shopping_list.dart';
+import 'package:fluttify/providers/shopping_list_provider.dart';
 import 'package:fluttify/services/auth.dart';
 import 'package:fluttify/services/firestore.dart';
+import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -69,14 +71,10 @@ class _HomeState extends State<Home> {
                           trailing: const Icon(Icons.arrow_forward),
                           onTap: () {
                             if (!mounted) return;
-                            Navigator.pushNamed(
-                              context,
-                              '/details',
-                              arguments: {
-                                'id': doc.reference.id,
-                                'title': doc['title'],
-                              },
-                            );
+                            context.read<ShoppingListProvider>().setListId(doc.reference.id);
+                            context.read<ShoppingListProvider>().setListTitle(doc['title']);
+                            context.read<ShoppingListProvider>().updateTotalPrice(doc.reference.id);
+                            Navigator.pushNamed(context, '/details');
                           },
                           onLongPress: () {
                             showDialog(
