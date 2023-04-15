@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -42,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () async {
               bool shouldRedirect = await signOut();
               if (shouldRedirect) {
+                if (!mounted) return;
                 Navigator.pushReplacementNamed(context, '/');
                 Fluttertoast.showToast(msg: 'Wylogowano pomyślnie');
               }

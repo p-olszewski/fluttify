@@ -53,7 +53,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
         height: screenHeight,
         child: Column(
           children: [
-            InputRow(),
+            const InputRow(),
             Expanded(
               child: StreamBuilder<QuerySnapshot>(
                 stream: snapshot,

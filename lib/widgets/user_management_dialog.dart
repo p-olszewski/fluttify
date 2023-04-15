@@ -60,6 +60,7 @@ class _UserManagementDialogState extends State<UserManagementDialog> {
           }
           try {
             await addUserToShoppingList(listId, _emailController.text);
+            if (!mounted) return;
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
