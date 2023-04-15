@@ -10,7 +10,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
   Widget get child => throw UnimplementedError();
 
   @override
-  Size get preferredSize => Size.fromHeight(100);
+  Size get preferredSize => const Size.fromHeight(100);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
                   const SizedBox(width: 10),
                   Text(
                     '${context.watch<ShoppingListProvider>().totalPrice} zł',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.indigo,
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -54,7 +54,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSize {
         IconButton(
           onPressed: () => showDialog(
             context: context,
-            builder: (context) => UserManagementDialog(),
+            builder: (context) => const UserManagementDialog(),
           ),
           icon: const Icon(Icons.manage_accounts),
         ),
